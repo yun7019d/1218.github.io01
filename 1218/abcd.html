@@ -1,0 +1,386 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+            font-family: Arial, sans-serif;
+            background-color: #fdfcfb;
+            overflow: hidden;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+        }
+
+        /* 基礎容器樣式 */
+        .page-container {
+            width: 320px;
+            height: 430px;
+            border-radius: 60px;
+            position: relative;
+            margin: 0 auto;
+            background-color: #FEFDF8;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            overflow: hidden;
+        }
+        .menu-container {
+            position: absolute;
+            top: 30px;
+            left: 20px;
+            z-index: 1000;
+            display: flex;
+            flex-direction: column;
+            gap: 20px;  /* 調整圖示之間的間距 */
+        }
+
+        /* 漢堡選單圖示 */
+        .menu-icon {
+            width: 30px;
+            height: 30px;
+            position: relative;
+            cursor: pointer;
+        }
+
+        .menu-line {
+            width: 30px;
+            height: 5px;
+            background-color: #C0D5EC;
+            margin: 4px 0;
+            border-radius: 3px;
+            transition: all 0.3s ease;
+        }
+
+        .home-icon {
+            width: 24px;
+            height: 24px;
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            display: none;
+        }
+
+        /* 當選單打開時的樣式 */
+        .menu-open .menu-line {
+            display: none;
+        }
+
+        .menu-open .home-icon {
+            display: block;
+        }
+
+        /* 移除連結的預設樣式 */
+        .icon-link {
+            text-decoration: none;
+            color: #3B3754;
+            width: 100%;
+            height: 100%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        /* 側邊選單 */
+        .slide-menu {
+            position: absolute;
+            left: -300px;
+            top: 0;
+            width: 200px;
+            height: 100%;
+            background-color: rgba(240, 243, 249, 0.95);
+            padding: 80px 8px 20px 8px;
+            gap: 0px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            transition: left 0.3s ease;
+            box-shadow: 2px 0 5px rgba(50, 37, 84, 0.1);
+            z-index: 999;
+            
+            /* 添加不規則曲面效果 */
+            border-radius: 0 80% 80% 0 / 0 50% 50% 0;
+            
+            /* 添加額外的視覺效果 */
+            backdrop-filter: blur(5px);
+            border-right: 1px solid rgba(255, 255, 255, 0.3);
+        }
+
+        /* 當選單打開時的樣式 */
+        .slide-menu.open {
+            left: 0;
+            animation: menuSlide 0.3s ease forwards;
+        }
+
+        /* 添加動畫效果 */
+        @keyframes menuSlide {
+            from {
+                border-radius: 0 80% 80% 0 / 0 50% 50% 0;
+            }
+            to {
+                border-radius: 0 100% 100% 0 / 0 70% 70% 0;
+            }
+        }
+
+        /* 調整選單項目位置以配合新的形狀 */
+        .slide-menu a:not(.home-link) {
+            transform: translateX(-10px);  /* 稍微向左偏移以配合曲面 */
+            margin: 5px 0;
+            padding: 12px 25px;
+            /* 其他現有樣式保持不變 */
+        }
+
+        /* 選單內的連結基本樣式 */
+        .slide-menu a {
+            display: inline-block;
+            padding: 4px 25px;           /* 恢復為均等的左右 padding */
+            color: #3B3754;
+            text-decoration: none;
+            text-align: center;          /* 保持置中對齊 */
+            margin: 0px auto;
+            transition: background-color 0.3s;
+            border-radius: 25px;
+            width: fit-content;
+            position: relative;
+            left: 0;                     /* 移除向右偏移 */
+            font-size: 14px;
+            line-height: 1.2;
+        }
+
+        .slide-menu a:hover {
+            background-color: rgba(173, 172, 224, 0.3);
+        }
+
+        /* Home icon 專用樣式 */
+        .home-link {
+            position: absolute;
+            left: 0px;
+            top: 360px;
+            width: 24px;
+            height: 24px;
+            padding: 0;
+            margin: 0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 50%;
+            transition: background-color 0.3s;
+            z-index: 1000;
+            transform: translateX(-2px);
+        }
+
+        .home-link img {
+            width: 100%;
+            height: 100%;
+            object-fit: contain;
+        }
+
+        .home-link:hover {
+            background-color: rgba(173, 172, 224, 0.3);
+        }
+
+        /* 圓形區塊容器 */
+        .circles-container {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            height: 100%;
+            gap: 20px;
+            padding-top: 40px;
+        }
+
+        /* 圓形區塊共同樣式 */
+        .circle {
+            width: 200px;
+            height: 150px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-size: 20px;
+            cursor: pointer;
+            transition: transform 0.3s ease;
+        }
+
+        /* 上方圓形 */
+        .circle-top {
+            background-color: rgba(200, 220, 230, 0.5);
+            border-radius: 40% 40% 50% 50%;
+        }
+
+        /* 下方圓形 */
+        .circle-bottom {
+            background-color: rgba(230, 200, 220, 0.5);
+            border-radius: 50% 50% 40% 40%;
+        }
+        .circle-top:active {
+        background-color: rgba(200, 220, 230, 0.95);  /* 更深的顏色 */
+        transform: translateY(10px) scale(0.98);
+    }
+    .circle-bottom:active {
+        background-color: rgba(230, 200, 220, 0.95);  /* 更深的顏色 */
+        transform: translateY(-10px) scale(0.98);
+    } 
+
+
+        /* 超結樣式 */
+        .circle a {
+            text-decoration: none;
+            color: #3B3754; 
+            width: 100%;
+            height: 100%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        /* 頁面標題 */
+        .page-title {
+            position: absolute;
+            top: 33px;
+            left: 62px;
+            color: #3B3754;
+            font-size: 18px;
+            transform: none;
+        }
+
+        /* 選單容器調整 */
+        .slide-menu {
+            display: flex;
+            flex-direction: column;
+            align-items: center;         /* 保持置中對齊 */
+            padding: 80px 8px 60px 8px;
+            gap: 0px;
+        }
+
+        /* 特別為房子圖示的連結添加樣式 */
+        .slide-menu a.home-link {
+            padding: 0;
+            margin: 0;
+            position: absolute;
+            bottom: 30px;
+            left: 50px;
+            width: 24px;
+            height: 24px;
+            background: none;
+        }
+
+        .slide-menu a.home-link:hover {
+            background: none;
+        }
+
+        /* 當選單打開時顯示 home icon */
+        .slide-menu.open ~ .menu-container .menu-home-icon {
+            display: block;
+        }
+
+        .slide-menu a:not(.home-link) {
+            display: inline-block;
+            padding: 15px 25px;
+            color: #867fa5;
+            text-decoration: none;
+            text-align: center;
+            margin: 1px auto;
+            transition: background-color 0.3s;
+            border-radius: 25px;
+            width: fit-content;
+            position: relative;
+            font-size: 14px;
+            line-height: 1.2;
+            transform: translateY(-60px);
+        }
+
+        .slide-menu a:not(.home-link):hover {
+            background-color: rgba(134, 127, 165, 0.1);
+        }
+
+    </style>
+</head>
+<body>
+    <div class="page-container">
+        <!-- 漢堡選單容器 -->
+        <div class="menu-container">
+            <!-- 選單圖示 -->
+            <div class="menu-icon" onclick="toggleMenu()">
+                <img src="./IMG/1.png" alt="Home" class="home-icon" style="display: none;" onclick="goHome(event)">
+                <div class="menu-line"></div>
+                <div class="menu-line"></div>
+                <div class="menu-line"></div>
+            </div>
+        </div>
+
+        <!-- 頁面標題 -->
+        <div class="page-title">社交練習</div>
+
+        <!-- 圓形區塊 -->
+        <div class="circles-container">
+            <div class="circle circle-top">
+                <a href="./chat.html">我的好朋友</a>
+            </div>
+            <div class="circle circle-bottom">
+                <a href="http://127.0.0.1:5501/3.html">好朋友小學堂</a>
+            </div>
+        </div>
+
+        <!-- 側邊選單 -->
+        <div class="slide-menu" id="slideMenu">
+            <a href="http://127.0.0.1:5501/4.html">學習情緒</a>
+            <a href="http://127.0.0.1:5501/2.html">社交練習</a>
+            <a href="http://127.0.0.1:5501/10.html">心情專區</a>
+            <a href="http://127.0.0.1:5501/9.html">定位專區</a>
+            <a href="http://127.0.0.1:5501/pic.html">行為紀錄</a>
+        </div>
+    </div>
+
+    <script>
+        function goHome(event) {
+            event.stopPropagation();
+            window.location.href = 'index.html?noSplash=true';
+        }
+
+        function toggleMenu() {
+            const menu = document.getElementById('slideMenu');
+            const menuIcon = document.querySelector('.menu-icon');
+            const menuLines = document.querySelectorAll('.menu-line');
+            const homeIcon = document.querySelector('.home-icon');
+            
+            menu.classList.toggle('open');
+            menuIcon.classList.toggle('menu-open');
+            
+            // 切換圖標顯示
+            if (menu.classList.contains('open')) {
+                menuLines.forEach(line => line.style.display = 'none');
+                homeIcon.style.display = 'block';
+            } else {
+                menuLines.forEach(line => line.style.display = 'block');
+                homeIcon.style.display = 'none';
+            }
+        }
+
+        // 添加點擊頁面關閉選單的功能
+        document.addEventListener('click', function(event) {
+            const menu = document.getElementById('slideMenu');
+            const menuIcon = document.querySelector('.menu-icon');
+            const menuContainer = document.querySelector('.menu-container');
+            
+            // 如果點擊的不是選單和選單圖標
+            if (!menu.contains(event.target) && 
+                !menuContainer.contains(event.target) && 
+                menu.classList.contains('open')) {
+                
+                toggleMenu();
+            }
+        });
+
+        // 防止選單內部點擊觸發關閉
+        document.querySelector('.slide-menu').addEventListener('click', function(event) {
+            event.stopPropagation();
+        });
+    </script>
+</body>
+</html>

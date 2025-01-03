@@ -1,0 +1,612 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>聊天室</title>
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+            background-color: #FEFDF8;
+            font-family: Arial, sans-serif;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            overflow: hidden; /* 防止頁面滾動 */
+        }
+
+        /* 添加頁面容器 */
+        .page-container {
+            width: 320px;
+            height: 430px;
+            border-radius: 60px;
+            position: relative;
+            margin: 0 auto;
+            background-color: none;
+            overflow: hidden;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+        .menu-container {
+            position: absolute;
+            top: 30px;
+            left: 20px;
+            z-index: 1000;
+            display: flex;
+            flex-direction: column;
+            gap: 20px;  /* 調整圖示之間的間距 */
+        }
+        /* 調整聊天容器以配合新的頁面容器 */
+        .chat-container {
+            width: 100%;
+            height: 100%;
+            background-image: url(./IMG/2.png);
+            position: relative;
+            overflow: hidden;
+            display: flex;
+            flex-direction: column;
+        }
+
+        /* 確保其他元素位置正確 */
+        .chat-header {
+            padding: 15px 20px;
+            text-align: left;
+            font-size: 18px;
+            color: #4A4A4A;
+            flex-shrink: 0;
+            position: absolute;
+            top: 18px;
+            left: 38px;
+            z-index: 3;
+            background: none;
+            padding-right: 30px;
+            pointer-events: none; /* 確保標題不會干擾滾動 */
+        }
+
+        .chat-messages {
+            height: 270px;
+            max-height: calc(100% - 130px);
+            padding: 15px 20px;
+            margin: 69px 8px 8px 8px;
+            overflow-y: auto;
+            display: flex;
+            flex-direction: column;
+            justify-content: flex-start;
+            position: relative;
+            background-color: none;
+            border-radius: 35px;
+        }
+
+        .menu-container {
+            position: absolute;
+            top: 30px;
+            left: 20px;
+            z-index: 1000;
+            display: flex;
+            flex-direction: column;
+            gap: 20px;  /* 調整圖示之間的間距 */
+        }
+
+        /* 漢堡選單圖示 */
+        .menu-icon {
+            cursor: pointer;
+        }
+
+        .menu-icon div {
+            width: 30px;
+            height: 5px;
+            background-color: #C0D5EC;
+            margin: 4px 0;
+            border-radius: 3px;
+        }
+
+
+        /* 移除連結的預設樣式 */
+        .icon-link {
+            text-decoration: none;
+            color: #3B3754;
+            width: 100%;
+            height: 100%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        /* 側邊選單 */
+        .slide-menu {
+            position: fixed;
+            left: -250px;
+            top: 0;
+            width: 200px;
+            height: 100vh;
+            background-color: rgba(240, 243, 249, 0.95);
+            transition: left 0.3s ease;
+            z-index: 999;
+            padding: 120px 8px 20px 8px;
+            gap: 0px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        .slide-menu.open {
+            left: 0;
+        }
+
+        /* 選單內的連結基本樣式 */
+        .slide-menu a {
+            display: inline-block;
+            padding: 4px 25px;           /* 恢復為均等的左右 padding */
+            color: #3B3754;
+            text-decoration: none;
+            text-align: center;          /* 保持置中對齊 */
+            margin: 0px auto;
+            transition: background-color 0.3s;
+            border-radius: 25px;
+            width: fit-content;
+            position: relative;
+            left: 0;                     /* 移除向右偏移 */
+            font-size: 14px;
+            line-height: 1.2;
+        }
+
+        .slide-menu a:hover {
+            background-color: rgba(173, 172, 224, 0.3);
+        }
+
+        /* 移除這些 home-link 相關的樣式 */
+        .home-link {
+            position: absolute;
+            left: 0px;
+            top: 360px;
+            width: 24px;
+            height: 24px;
+            padding: 0;
+            margin: 0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 50%;
+            transition: background-color 0.3s;
+            z-index: 1000;
+            transform: translateX(-2px);
+        }
+
+        .home-link img {
+            width: 100%;
+            height: 100%;
+            object-fit: contain;
+        }
+
+        .home-link:hover {
+            background-color: rgba(173, 172, 224, 0.3);
+        }
+
+        /* 移除這些相關樣式 */
+        .slide-menu a.home-link {
+            padding: 0;
+            margin: 0;
+            position: absolute;
+            bottom: 30px;
+            left: 50px;
+            width: 24px;
+            height: 24px;
+            background: none;
+        }
+
+        .slide-menu a.home-link:hover {
+            background: none;
+        }
+
+        /* 當選單打開時顯示 home icon */
+        .slide-menu.open ~ .menu-container .menu-home-icon {
+            display: block;
+        }
+
+        /* 側邊選單樣式 */
+        .slide-menu {
+            display: flex;
+            flex-direction: column;
+            align-items: center;         /* 保持置中對齊 */
+            padding: 80px 8px 60px 8px;
+            gap: 0px;
+        }
+
+        /* 特別為房子圖示的連結添加樣式 */
+        .slide-menu a.home-link {
+            padding: 0;
+            margin: 0;
+            position: absolute;
+            bottom: 30px;
+            left: 50px;
+            width: 24px;
+            height: 24px;
+            background: none;
+        }
+
+        .slide-menu a.home-link:hover {
+            background: none;
+        }
+
+        /* 當選單打開時顯示 home icon */
+        .slide-menu.open ~ .menu-container .menu-home-icon {
+            display: block;
+        }
+
+        /* 側邊選單樣式 */
+        .slide-menu {
+            position: absolute;
+            left: -300px;
+            top: 0;
+            width: 200px;
+            height: 100%;
+            background-color: rgba(240, 243, 249, 0.95);
+            border-top-right-radius: 50%;
+            border-bottom-right-radius: 50%;
+            padding: 80px 8px 20px 8px;
+            gap: 0px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            transition: left 0.3s ease;
+            box-shadow: 2px 0 5px rgba(50, 37, 84, 0.1);
+            z-index: 999;
+        }
+
+        
+        .slide-menu a:not(.home-link) {
+            display: inline-block;
+            padding: 15px 25px;
+            color: #867fa5;
+            text-decoration: none;
+            text-align: center;
+            margin: 1px auto;
+            transition: background-color 0.3s;
+            border-radius: 25px;
+            width: fit-content;
+            position: relative;
+            font-size: 14px;
+            line-height: 1.2;
+            transform: translateY(-60px);
+        }
+
+        .slide-menu a:not(.home-link):hover {
+            background-color: rgba(134, 127, 165, 0.1);
+        }
+
+        .message {
+            margin-bottom: 15px;
+            display: flex;
+            align-items: flex-start;
+            opacity: 0;
+            animation: fadeIn 0.3s forwards;
+            max-width: 100%;
+            position: relative;
+            padding: 0 5px;
+        }
+
+        .message.left {
+            justify-content: flex-start;
+        }
+
+        .message.right {
+            justify-content: flex-end;
+        }
+
+        .message-content {
+            max-width: 80%;
+            padding: 10px 15px;
+            border-radius: 20px;
+            font-size: 14px;
+            word-wrap: break-word;
+        }
+
+        .message.left .message-content {
+            background-color: #E8E9F0;
+            color: #4A4A4A;
+            margin-left: 10px;
+        }
+
+        .message.right .message-content {
+            background-color: #9eb0cc;
+            color: white;
+        }
+
+        .message-avatar {
+            width: 30px;
+            height: 30px;
+            border-radius: 50%;
+            background-color: #E8E9F0;
+        }
+
+        .chat-input {
+            position: absolute;
+            bottom: 20px;
+            left: 8px;
+            right: 42px;
+            height: 38px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 4px;
+            z-index: 2;
+        }
+
+        .chat-input button {
+            width: 42px;
+            height: 42px;
+            border: none;
+            background: none;
+            cursor: pointer;
+            padding: 6px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-shrink: 0;
+        }
+
+        .chat-input button img {
+            width: 30px;
+            height: 30px;
+            object-fit: contain;
+        }
+
+        .chat-input input {
+            flex: 1;
+            border: none;
+            background-color: #E8E9F0;
+            padding: 8px 15px;
+            font-size: 13px;
+            outline: none;
+            margin: 0 6px;
+            border-radius: 19px;
+            min-width: 130px;
+            max-width: 160px;
+        }
+
+        .chat-input button:first-child {
+            margin-left: 0;
+        }
+
+        .chat-input button:last-child {
+            margin-right: 2px;
+        }
+
+        /* 添加淡入動畫 */
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(-10px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        /* 調整滾動條樣式 */
+        .chat-messages::-webkit-scrollbar {
+            width: 4px;
+        }
+
+        .chat-messages::-webkit-scrollbar-track {
+            background: transparent;
+        }
+
+        .chat-messages::-webkit-scrollbar-thumb {
+            background: #E8E9F0;
+            border-radius: 2px;
+        }
+
+        /* 調整左上角圖示的大小 */
+        .menu-icon img {
+            width: 25px;  /* 縮小圖示 */
+            height: 25px;
+        }
+
+        /* 移除所有與 home-link 相關的 CSS */
+        .home-link,
+        .slide-menu a.home-link,
+        .slide-menu a.home-link:hover {
+            display: none;
+        }
+    </style>
+</head>
+<body>
+    <div class="page-container">
+        <div class="menu-container">
+            <!-- 選單圖示 -->
+            <div class="menu-icon" onclick="toggleMenu()">
+                <img src="./IMG/1.png" alt="Home" class="home-icon" style="display: none;" onclick="goHome(event)">
+                <div class="menu-line"></div>
+                <div class="menu-line"></div>
+                <div class="menu-line"></div>
+            </div>
+        </div>
+        
+        <div class="chat-container">
+            <!-- 聊天界面 -->
+            <div class="chat-header">
+                我的好朋友
+            </div>
+            <div class="chat-messages" id="chatMessages">
+                <!-- 聊天訊息會在這裡動態添加 -->
+            </div>
+            <div class="chat-input">
+                <button>
+                    <img src="./IMG/c1.png" alt="Camera">
+                </button>
+                <button>
+                    <img src="./IMG/c2.png" alt="Image">
+                </button>
+                <input type="text" placeholder="輸入訊息..." id="messageInput">
+                <button>
+                    <img src="./IMG/c3.png" alt="Voice">
+                </button>
+            </div>
+        </div>
+
+        <!-- 將側拉式選單移到這裡 -->
+        <div class="slide-menu" id="slideMenu">
+            <a href="http://127.0.0.1:5501/4.html">學習情緒</a>
+            <a href="http://127.0.0.1:5501/2.html">社交練習</a>
+            <a href="http://127.0.0.1:5501/10.html">心情專區</a>
+            <a href="http://127.0.0.1:5501/9.html">定位專區</a>
+            <a href="http://127.0.0.1:5501/pic.html">行為紀錄</a>
+        </div>
+    </div>
+
+    <script>
+        // 聊天功能
+        const messageInput = document.getElementById('messageInput');
+        const chatMessages = document.getElementById('chatMessages');
+
+        // 擴充預設的機器人訊息
+        const botMessages = [
+            "嗨!今天過得好嗎",
+            "你想要跟我聊聊嗎？",
+            "我們可以說說你喜歡的事情",
+            "今天有發生什麼開心的事嗎？",
+            "要不要聊聊你的心情呢？"
+        ];
+
+        // 機器人的回應庫
+        const botResponses = {
+            // 問候相關
+            '你好': ['嗨！很高興見到你！', '你好啊！今天心情如何？', '嗨！想聊聊天嗎？'],
+            '早安': ['早安！今天是嶄新的一天呢！', '早安！希望你有美好的一天！'],
+            '晚安': ['晚安！祝你有個好夢！', '晚安！明天見！', '好好休息，晚安！'],
+            
+            // 心情相關
+            '開心': ['太好了！我也為你感到開心！', '願你每天都這麼開心！', '能分享是什麼讓你開心嗎？'],
+            '難過': ['沒關係，我在這裡陪著你', '要說說發生什麼事嗎？', '抱抱，相信明天會更好！'],
+            '生氣': ['深呼吸，讓我們一起冷靜下來', '要說說是什麼讓你生氣嗎？', '我陪你聊聊天，好嗎？'],
+            
+            // 一般對話
+            '謝謝': ['不客氣！', '應該的！', '很高興能幫到你！'],
+            '再見': ['再見！要記得我喔！', '下次再聊！', '期待下次見面！'],
+            '無聊': ['要玩個遊戲嗎？', '要聊聊你的興趣嗎？', '不如說說你最近看了什麼有趣的事？']
+        };
+
+        // 添加預設的機器人訊息
+        window.onload = function() {
+            botMessages.forEach((msg, index) => {
+                setTimeout(() => {
+                    addMessage(msg, 'left');
+                }, index * 1500); // 增加間隔時間到1.5秒
+            });
+        };
+
+        // 添加訊息到聊天界面
+        function addMessage(text, position) {
+            const messageDiv = document.createElement('div');
+            messageDiv.className = `message ${position}`;
+            
+            if (position === 'left') {
+                const avatar = document.createElement('div');
+                avatar.className = 'message-avatar';
+                messageDiv.appendChild(avatar);
+            }
+
+            const content = document.createElement('div');
+            content.className = 'message-content';
+            content.textContent = text;
+            messageDiv.appendChild(content);
+            
+            chatMessages.appendChild(messageDiv);
+            
+            // 確保滾動到最新訊息
+            requestAnimationFrame(() => {
+                messageDiv.scrollIntoView({ behavior: 'smooth', block: 'end' });
+            });
+        }
+
+        // 獲取機器人回應
+        function getBotResponse(userMessage) {
+            // 轉換為小寫來比對關鍵字
+            const message = userMessage.toLowerCase();
+            
+            // 檢查是否包含關鍵字
+            for (let key in botResponses) {
+                if (message.includes(key)) {
+                    const responses = botResponses[key];
+                    return responses[Math.floor(Math.random() * responses.length)];
+                }
+            }
+            
+            // 如果沒有匹配的關鍵字，返回預設回應
+            const defaultResponses = [
+                "嗯...我在聽呢",
+                "真的嗎？告訴我更多！",
+                "這樣啊...要不要說得更詳細一點？",
+                "我懂你的感受",
+                "謝謝你跟我分享這些",
+                "我們繼續聊聊吧！"
+            ];
+            return defaultResponses[Math.floor(Math.random() * defaultResponses.length)];
+        }
+
+        // 處理訊息輸入
+        messageInput.addEventListener('keypress', function(e) {
+            if (e.key === 'Enter' && this.value.trim()) {
+                const userMessage = this.value;
+                addMessage(userMessage, 'right');
+                this.value = '';
+                
+                // 延遲回應，模擬思考時間
+                setTimeout(() => {
+                    const response = getBotResponse(userMessage);
+                    addMessage(response, 'left');
+                }, 1000);
+            }
+        });
+        
+        function goHome(event) {
+            event.stopPropagation();
+            window.location.href = 'index.html?noSplash=true';
+        }
+
+        function toggleMenu() {
+            const menu = document.getElementById('slideMenu');
+            const menuIcon = document.querySelector('.menu-icon');
+            const menuLines = document.querySelectorAll('.menu-line');
+            const homeIcon = document.querySelector('.home-icon');
+            
+            menu.classList.toggle('open');
+            menuIcon.classList.toggle('menu-open');
+            
+            // 切換圖標顯示
+            if (menu.classList.contains('open')) {
+                menuLines.forEach(line => line.style.display = 'none');
+                homeIcon.style.display = 'block';
+            } else {
+                menuLines.forEach(line => line.style.display = 'block');
+                homeIcon.style.display = 'none';
+            }
+        }
+
+        // 添加點擊頁面關閉選單的功能
+        document.addEventListener('click', function(event) {
+            const menu = document.getElementById('slideMenu');
+            const menuIcon = document.querySelector('.menu-icon');
+            const menuContainer = document.querySelector('.menu-container');
+            
+            // 如果點擊的不是選單和選單圖標
+            if (!menu.contains(event.target) && 
+                !menuContainer.contains(event.target) && 
+                menu.classList.contains('open')) {
+                
+                toggleMenu();
+            }
+        });
+
+        // 防止選單內部點擊觸發關閉
+        document.querySelector('.slide-menu').addEventListener('click', function(event) {
+            event.stopPropagation();
+        });
+    
+    </script>
+</body>
+</html>

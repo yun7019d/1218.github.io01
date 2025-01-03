@@ -1,0 +1,82 @@
+body {
+    margin: 0;
+    padding: 0;
+    font-family: Arial, sans-serif;
+    display: flex;
+    justify-content: center; /* 水平置中 */
+    align-items: center; /* 垂直置中 */
+    height: 100vh;
+    background-color: #FAFAF7;
+}
+
+/* 容器 */
+.container {
+    width: 400px; /* 固定寬度 */
+    height: 450px; /* 固定高度 */
+    background-color: #FAFAF7;
+    border-radius: 50px; /* 圓角 */
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); /* 加陰影增加視覺效果 */
+    overflow: hidden;
+    display: flex;
+}
+
+/* 左側的側邊選單 */
+.menu {
+    background-color: #E5ECF7; /* 淡藍色背景 */
+    width: 50%;
+    border-radius: 0 100px 100px 0;
+    position: relative;
+}
+
+/* 三條線的菜單圖示 */
+.menu-icon {
+    position: absolute;
+    top: 20px;
+    left: 20px;
+}
+
+.menu-icon .line {
+    width: 30px;
+    height: 3px;
+    background-color: #E4ECCC;
+    margin: 6px 0;
+    border-radius: 2px;
+}
+
+/* 內容文字 */
+.content {
+    flex: 1; /* 讓內容佔據剩餘空間 */
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 20px;
+}
+
+.menu-items {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    text-align: left;
+    line-height: 2.5;
+}
+
+.menu-items li {
+    margin: 10px 0;
+}
+
+/* 超連結樣式 */
+.menu-items a {
+    text-decoration: none; /* 移除底線 */
+    color: #5B5D80; /* 文字顏色 */
+    font-size: 1.2em;
+    display: inline-block;
+    transition: background-color 0.3s, color 0.3s; /* 添加過渡效果 */
+    padding: 5px 10px; /* 增加內距方便滑鼠碰觸 */
+    border-radius: 5px; /* 微圓角效果 */
+}
+
+/* 滑鼠懸停樣式 */
+.menu-items a:hover {
+    background-color: #F2E5C6; /* 米色背景 */
+    color: #000; /* 字體變黑 */
+}

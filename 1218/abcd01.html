@@ -1,0 +1,774 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<style>
+        body {
+            margin: 0;
+            padding: 0;
+            font-family: Arial, sans-serif;
+            background-color: #fdfcfb;
+            overflow: hidden;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+        }
+
+        /* 基礎容器樣式 */
+        .page-container {
+            width: 320px;
+            height: 430px;
+            border-radius: 60px;
+            position: relative;
+            margin: 0 auto;
+            background-color: #FEFDF8;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            overflow: hidden;
+        }
+
+        /* 漢堡選單圖示容器 */
+        .menu-container {
+            position: absolute;
+            top: 30px;
+            left: 20px;
+            z-index: 1000;
+            display: flex;
+            flex-direction: column;
+            gap: 20px;  /* 調整圖示之間的間距 */
+        }
+
+        /* 漢堡選單圖示 */
+        .menu-icon {
+            width: 30px;
+            height: 30px;
+            position: relative;
+            cursor: pointer;
+        }
+
+        .menu-line {
+            width: 30px;
+            height: 5px;
+            background-color: #C0D5EC;
+            margin: 4px 0;
+            border-radius: 3px;
+            transition: all 0.3s ease;
+        }
+
+        .home-icon {
+            width: 24px;
+            height: 24px;
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            display: none;
+        }
+
+        /* 當選單打開時的樣式 */
+        .menu-open .menu-line {
+            display: none;
+        }
+
+        .menu-open .home-icon {
+            display: block;
+        }
+
+        /* 移除連結的預設樣式 */
+        .icon-link {
+            text-decoration: none;
+            color: #3B3754;
+            width: 100%;
+            height: 100%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        /* 側邊選單 */
+        .slide-menu {
+            position: absolute;
+            left: -300px;
+            top: 0;
+            width: 200px;
+            height: 100%;
+            background-color: rgba(240, 243, 249, 0.95);
+            padding: 80px 8px 20px 8px;
+            gap: 0px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            transition: left 0.3s ease;
+            box-shadow: 2px 0 5px rgba(50, 37, 84, 0.1);
+            z-index: 999;
+            border-radius: 0 80% 80% 0 / 0 50% 50% 0;
+            backdrop-filter: blur(5px);
+            border-right: 1px solid rgba(255, 255, 255, 0.3);
+        }
+
+        .slide-menu.open {
+            left: 0;
+            animation: menuSlide 0.3s ease forwards;
+        }
+
+        @keyframes menuSlide {
+            from {
+                border-radius: 0 80% 80% 0 / 0 50% 50% 0;
+            }
+            to {
+                border-radius: 0 100% 100% 0 / 0 70% 70% 0;
+            }
+        }
+
+        .slide-menu a {
+            transform: translateX(-10px);
+            margin: 5px 0;
+            padding: 12px 25px;
+            color: #3B3754;
+            text-decoration: none;
+            text-align: center;
+            transition: background-color 0.3s;
+            border-radius: 25px;
+            width: fit-content;
+            font-size: 14px;
+            line-height: 1.2;
+        }
+
+        .slide-menu a:hover {
+            background-color: rgba(173, 172, 224, 0.3);
+        }
+
+        /* Home icon 專用樣式 */
+        .home-link {
+            position: absolute;
+            left: 50px;
+            top: 360px;
+            width: 24px;
+            height: 24px;
+            padding: 0;
+            margin: 0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 50%;
+            transition: background-color 0.3s;
+            z-index: 1000;
+            transform: translateX(-2px);
+        }
+
+        .home-link img {
+            width: 100%;
+            height: 100%;
+            object-fit: contain;
+        }
+
+        .home-link:hover {
+            background-color: rgba(173, 172, 224, 0.3);
+        }
+
+
+
+        /* 頁面標題 */
+        .page-title {
+            position: absolute;
+            top: 33px;
+            left: 62px;
+            color: #3B3754;
+            font-size: 18px;
+            transform: none;
+        }
+
+        /* 選單容器調整 */
+        .slide-menu {
+            display: flex;
+            flex-direction: column;
+            align-items: center;         /* 保持置中對齊 */
+            padding: 80px 8px 60px 8px;
+            gap: 0px;
+        }
+
+        /* 特別為房子圖示的連結添加樣式 */
+        .slide-menu a.home-link {
+            padding: 0;
+            margin: 0;
+            position: absolute;
+            bottom: 30px;
+            left: 50px;
+            width: 24px;
+            height: 24px;
+            background: none;
+        }
+
+        .slide-menu a.home-link:hover {
+            background: none;
+        }
+
+        /* 當選單打開時顯示 home icon */
+        .slide-menu.open ~ .menu-container .menu-home-icon {
+            display: block;
+        }
+
+        /* 側邊選單樣式 */
+        .slide-menu {
+            position: absolute;
+            left: -300px;
+            top: 0;
+            width: 200px;
+            height: 100%;
+            background-color: rgba(240, 243, 249, 0.95);
+            border-top-right-radius: 50%;
+            border-bottom-right-radius: 50%;
+            padding: 80px 8px 20px 8px;
+            gap: 0px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            transition: left 0.3s ease;
+            box-shadow: 2px 0 5px rgba(50, 37, 84, 0.1);
+            z-index: 999;
+        }
+
+        .slide-menu a:not(.home-link) {
+            display: inline-block;
+            padding: 15px 25px;
+            color: #867fa5;
+            text-decoration: none;
+            text-align: center;
+            margin: 1px auto;
+            transition: background-color 0.3s;
+            border-radius: 25px;
+            width: fit-content;
+            position: relative;
+            font-size: 14px;
+            line-height: 1.2;
+            transform: translateY(-60px);
+        }
+
+        .slide-menu a:not(.home-link):hover {
+            background-color: rgba(134, 127, 165, 0.1);
+        }
+
+        .home-link {
+            position: absolute;
+            left: 20px;
+            top: 380px;
+            width: 24px;
+            height: 24px;
+            padding: 0;
+            margin: 0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 50%;
+            transition: background-color 0.3s;
+            z-index: 1000;
+        }
+
+        .home-link img {
+            width: 100%;
+            height: 100%;
+            object-fit: contain;
+        }
+
+        .home-link:hover {
+            background-color: rgba(173, 172, 224, 0.3);
+        }
+
+        .quiz-content {
+            position: absolute;
+            top: 68px;
+            bottom: 20px;
+            left: 6px;
+            right: 0px;
+            padding: 0 22px;
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+            overflow-y: auto;
+            overflow-x: hidden;
+        }
+
+        .question-card {
+            display: flex;
+            flex-direction: column;
+            gap: 15px;  /* 問題和選項之間的間距 */
+        }
+
+        .question-text {
+            background-color: #E8EEF6;
+            border-radius: 20px;
+            padding: 20px;
+            color: #3B3754;
+            font-size: 15px;
+            line-height: 1.6;
+            margin: 0 10px;
+        }
+
+        .options {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+            margin: 0 10px;
+        }
+
+        .option {
+            background-color: #F5F0F7;
+            border: none;
+            border-radius: 15px;
+            padding: 12px 15px;
+            text-align: left;
+            color: #3B3754;
+            font-size: 14px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .option:hover {
+            background-color: #EBE6ED;
+        }
+
+        .page-title {
+            font-size: 16px;
+            color: #3B3754;
+            margin-left: 15px;
+            font-weight: normal;
+        }
+
+        /* 添加答案反饋的樣式 */
+        .option.correct {
+            background-color: #D4EDDA !important;
+            color: #155724 !important;
+            border: 1px solid #C3E6CB !important;
+        }
+
+        .option.incorrect {
+            background-color: #F8D7DA !important;
+            color: #721C24 !important;
+            border: 1px solid #F5C6CB !important;
+        }
+
+        .option:disabled {
+            cursor: default;
+            opacity: 0.8;
+        }
+
+        /* 自定義滾動條樣式 */
+        .quiz-content::-webkit-scrollbar {
+            width: 6px;
+        }
+
+        .quiz-content::-webkit-scrollbar-track {
+            background: transparent;
+        }
+
+        .quiz-content::-webkit-scrollbar-thumb {
+            background: rgba(0, 0, 0, 0.1);
+            border-radius: 3px;
+        }
+
+        /* 計分按鈕樣式 */
+        .score-button {
+            padding: 20px 0 40px 0;  /* 上下增加間距 */
+            text-align: center;
+            position: relative;  /* 改為相對定位 */
+        }
+
+        .calculate-btn {
+            background-color: #C0D5EC;
+            color: #3B3754;
+            border: none;
+            border-radius: 20px;
+            padding: 10px 25px;
+            font-size: 16px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .calculate-btn:hover {
+            background-color: #A9C5E3;
+        }
+
+        /* 彈窗樣式 */
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.5);
+            z-index: 2000;
+        }
+
+        .modal-content {
+            background-color: #FEFDF8;
+            border-radius: 25px;
+            padding: 30px;
+            width: 280px;
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            text-align: center;
+        }
+
+        .modal-content h2 {
+            color: #3B3754;
+            margin-bottom: 20px;
+            font-size: 20px;
+        }
+
+        .modal-content p {
+            color: #3B3754;
+            font-size: 18px;
+            margin-bottom: 25px;
+        }
+
+        .restart-btn {
+            background-color: #C0D5EC;
+            color: #3B3754;
+            border: none;
+            border-radius: 20px;
+            padding: 10px 25px;
+            font-size: 16px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .restart-btn:hover {
+            background-color: #A9C5E3;
+        }
+
+        /* 添加按鈕組的樣式 */
+        .button-group {
+            display: flex;
+            gap: 15px;
+            justify-content: center;
+            margin-top: 20px;
+        }
+
+        .restart-btn, .exit-btn {
+            background-color: #C0D5EC;
+            color: #3B3754;
+            border: none;
+            border-radius: 20px;
+            padding: 10px 20px;
+            font-size: 16px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            min-width: 100px;
+        }
+
+        .exit-btn {
+            background-color: #E8EEF6;  /* 稍微淺一點的顏色區分 */
+        }
+
+        .restart-btn:hover, .exit-btn:hover {
+            background-color: #A9C5E3;
+        }
+
+        /* 確保最後一個問題和計分按鈕之間有適當的間距 */
+        .question-card:last-child {
+            margin-bottom: 10px;
+        }
+
+    </style>
+</body>
+<body>
+
+
+    <div class="page-container">
+        <!-- 漢堡選單容器 -->
+        <div class="menu-container">
+            <div class="menu-icon" onclick="toggleMenu()">
+                <img src="./IMG/1.png" alt="Home" class="home-icon" style="display: none;" onclick="goHome(event)">
+                <div class="menu-line"></div>
+                <div class="menu-line"></div>
+                <div class="menu-line"></div>
+            </div>
+        </div>
+
+        <!-- 頁面標題 -->
+        <div class="page-title">好朋友小學堂</div>
+
+
+    
+        <div class="quiz-content">
+            <!-- 第一題 -->
+            <div class="question-card" data-correct="A">
+                <p class="question-text">
+                    小明今天跟小朋友一起玩積木，有一個小朋友不小心把小明的積木弄倒了。小明皺起眉頭，看起來很安靜也有點不高興。請問，小明可能的感受是什麼？
+                </p>
+                <div class="options">
+                    <button class="option" onclick="checkAnswer(this, 'A')">A. 很傷心，因為他喜歡那新積木</button>
+                    <button class="option" onclick="checkAnswer(this, 'B')">B. 有點生氣，因為他的積木被弄倒了</button>
+                    <button class="option" onclick="checkAnswer(this, 'C')">C. 很累，因為玩太久了</button>
+                </div>
+            </div>
+    
+            <!-- 第二題 -->
+            <div class="question-card" data-correct="A">
+                <p class="question-text">
+                    小華在遊戲時不小心撞到了同學，看到同學痛得哭了。小華應該要：
+                </p>
+                <div class="options">
+                    <button class="option" onclick="checkAnswer(this, 'A')">A. 立即說對不起，並關心同學有沒有受傷</button>
+                    <button class="option" onclick="checkAnswer(this, 'B')">B. 假裝沒看到，繼續玩</button>
+                    <button class="option" onclick="checkAnswer(this, 'C')">C. 說是同學自己不小心</button>
+                </div>
+            </div>
+    
+            <!-- 第三題 -->
+            <div class="question-card" data-correct="A">
+                <p class="question-text">
+                    小美看到同學在分享點心，她也想要吃。這時候她應該：
+                </p>
+                <div class="options">
+                    <button class="option" onclick="checkAnswer(this, 'A')">A. 禮貌地問同學可不可以分享一些給她</button>
+                    <button class="option" onclick="checkAnswer(this, 'B')">B. 直接拿過來吃</button>
+                    <button class="option" onclick="checkAnswer(this, 'C')">C. 生氣地說同學不分享給她</button>
+                </div>
+            </div>
+            <div class="question-card" data-correct="B">
+                <p class="question-text">
+                    小強看到同學在畫畫時很認真，畫得很漂亮。這時候小強應該：
+                </p>
+                <div class="options">
+                    <button class="option" onclick="checkAnswer(this, 'A')">A. 說自己畫得比較好</button>
+                    <button class="option" onclick="checkAnswer(this, 'B')">B. 稱讚同學畫得真好看</button>
+                    <button class="option" onclick="checkAnswer(this, 'C')">C. 不理會繼續做自己的事</button>
+                </div>
+            </div>
+        
+            <!-- 第五題 -->
+            <div class="question-card" data-correct="A">
+                <p class="question-text">
+                    小玲和同學一起玩遊戲時，看到有位新同學站在旁邊。這時候小玲應該：
+                </p>
+                <div class="options">
+                    <button class="option" onclick="checkAnswer(this, 'A')">A. 邀請新同學一起加入遊戲</button>
+                    <button class="option" onclick="checkAnswer(this, 'B')">B. 繼續玩自己的不理他</button>
+                    <button class="option" onclick="checkAnswer(this, 'C')">C. 告訴新同學這是我們的遊戲</button>
+                </div>
+            </div>
+        
+            <!-- 第六題 -->
+            <div class="question-card" data-correct="B">
+                <p class="question-text">
+                    小芳看到同學跌倒了，膝蓋流血。這時候她應該：
+                </p>
+                <div class="options">
+                    <button class="option" onclick="checkAnswer(this, 'A')">A. 笑說同學很笨手笨腳</button>
+                    <button class="option" onclick="checkAnswer(this, 'B')">B. 趕快扶起同學，帶他去保健室</button>
+                    <button class="option" onclick="checkAnswer(this, 'C')">C. 害怕地跑走</button>
+                </div>
+            </div>
+        
+            <!-- 第七題 -->
+            <div class="question-card" data-correct="C">
+                <p class="question-text">
+                    小光在教室裡看到地上有垃圾。這時候他應該：
+                </p>
+                <div class="options">
+                    <button class="option" onclick="checkAnswer(this, 'A')">A. 假裝沒看到</button>
+                    <button class="option" onclick="checkAnswer(this, 'B')">B. 等別人來撿</button>
+                    <button class="option" onclick="checkAnswer(this, 'C')">C. 主動撿起來丟進垃圾桶</button>
+                </div>
+            </div>
+        
+            <!-- 第八題 -->
+            <div class="question-card" data-correct="A">
+                <p class="question-text">
+                    小雯的同學忘記帶鉛筆來學校。這時候小雯應該：
+                </p>
+                <div class="options">
+                    <button class="option" onclick="checkAnswer(this, 'A')">A. 借一支備用鉛筆給同學</button>
+                    <button class="option" onclick="checkAnswer(this, 'B')">B. 說同學不負責任</button>
+                    <button class="option" onclick="checkAnswer(this, 'C')">C. 叫同學自己想辦法</button>
+                </div>
+            </div>
+        
+            <!-- 第九題 -->
+            <div class="question-card" data-correct="B">
+                <p class="question-text">
+                    小德在走廊上不小心撞到老師。這時候他應該：
+                </p>
+                <div class="options">
+                    <button class="option" onclick="checkAnswer(this, 'A')">A. 快速跑走</button>
+                    <button class="option" onclick="checkAnswer(this, 'B')">B. 立刻道歉並說會小心</button>
+                    <button class="option" onclick="checkAnswer(this, 'C')">C. 說老師擋路</button>
+                </div>
+            </div>
+        
+            <!-- 第十題 -->
+            <div class="question-card" data-correct="C">
+                <p class="question-text">
+                    小珊看到同學在做手工藝時遇到困難。這時候她應該：
+                </p>
+                <div class="options">
+                    <button class="option" onclick="checkAnswer(this, 'A')">A. 說同學很笨</button>
+                    <button class="option" onclick="checkAnswer(this, 'B')">B. 不理會</button>
+                    <button class="option" onclick="checkAnswer(this, 'C')">C. 詢問同學需不需要幫忙</button>
+                </div>
+            </div>
+            <div class="score-button">
+                <button onclick="showScore()" class="calculate-btn">計算分數</button>
+            </div>
+        </div>
+
+        <!-- 添加結果彈窗 -->
+        <div id="scoreModal" class="modal">
+            <div class="modal-content">
+                <h2>測驗結果</h2>
+                <p>你的得分是：<span id="finalScore">0</span> / 100</p>
+                <div class="button-group">
+                    <button onclick="restartQuiz()" class="restart-btn">重新測驗</button>
+                    <button onclick="exitQuiz()" class="exit-btn">退出測驗</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- 側邊選單 -->
+        <div class="slide-menu" id="slideMenu">
+            <a href="http://127.0.0.1:5501/4.html">學習情緒</a>
+            <a href="http://127.0.0.1:5501/2.html">社交練習</a>
+            <a href="http://127.0.0.1:5501/10.html">心情專區</a>
+            <a href="http://127.0.0.1:5501/9.html">定位專區</a>
+            <a href="http://127.0.0.1:5501/pic.html">行為紀錄</a>
+        </div>
+    </div>
+
+    <script>
+        function goHome(event) {
+            event.stopPropagation();
+            window.location.href = 'index.html?noSplash=true';
+        }
+
+        function toggleMenu() {
+            const menu = document.getElementById('slideMenu');
+            const menuIcon = document.querySelector('.menu-icon');
+            const menuLines = document.querySelectorAll('.menu-line');
+            const homeIcon = document.querySelector('.home-icon');
+            
+            menu.classList.toggle('open');
+            menuIcon.classList.toggle('menu-open');
+            
+            if (menu.classList.contains('open')) {
+                menuLines.forEach(line => line.style.display = 'none');
+                homeIcon.style.display = 'block';
+            } else {
+                menuLines.forEach(line => line.style.display = 'block');
+                homeIcon.style.display = 'none';
+            }
+        }
+
+        document.addEventListener('click', function(event) {
+            const menu = document.getElementById('slideMenu');
+            const menuIcon = document.querySelector('.menu-icon');
+            const menuContainer = document.querySelector('.menu-container');
+            
+            if (!menu.contains(event.target) && 
+                !menuContainer.contains(event.target) && 
+                menu.classList.contains('open')) {
+                
+                toggleMenu();
+            }
+        });
+
+        document.querySelector('.slide-menu').addEventListener('click', function(event) {
+            event.stopPropagation();
+        });
+
+        // 修改計分相關的代碼
+        let score = 0;
+        let answeredQuestions = 0;
+
+        function checkAnswer(button, selected) {
+            const questionCard = button.closest('.question-card');
+            if (questionCard.dataset.answered) return;
+            
+            const correctAnswer = questionCard.dataset.correct;
+            const options = questionCard.querySelectorAll('.option');
+            
+            options.forEach(opt => {
+                opt.classList.remove('correct', 'incorrect');
+                opt.disabled = true;
+            });
+
+            if (selected === correctAnswer) {
+                button.classList.add('correct');
+                score += 10;  // 答對加 10 分
+            } else {
+                button.classList.add('incorrect');
+                options.forEach(opt => {
+                    if (opt.textContent.startsWith(correctAnswer)) {
+                        opt.classList.add('correct');
+                    }
+                });
+            }
+            
+            questionCard.dataset.answered = 'true';
+            answeredQuestions++;
+        }
+
+        function showScore() {
+            if (answeredQuestions < 10) {
+                alert('請先完成所有題目！');
+                return;
+            }
+            
+            const modal = document.getElementById('scoreModal');
+            const finalScore = document.getElementById('finalScore');
+            finalScore.textContent = score;
+            
+            // 將分數保存到 localStorage
+            localStorage.setItem('quizScore', score);
+            
+            // 更新 index 頁面的分數
+            try {
+                const indexScore = document.querySelector('.score-number');
+                if (indexScore) {
+                    indexScore.textContent = score;
+                }
+            } catch (e) {
+                console.log('Index page not in current window');
+            }
+            
+            modal.style.display = 'block';
+        }
+
+        // 修改分數顯示文字
+        document.querySelector('.modal-content p').innerHTML = 
+            `你的得分是：<span id="finalScore">0</span> / 100`;
+
+        // 重新開始時重置分數
+        function restartQuiz() {
+            score = 0;
+            answeredQuestions = 0;
+            
+            const questions = document.querySelectorAll('.question-card');
+            questions.forEach(question => {
+                delete question.dataset.answered;
+                const options = question.querySelectorAll('.option');
+                options.forEach(option => {
+                    option.classList.remove('correct', 'incorrect');
+                    option.disabled = false;
+                });
+            });
+            
+            document.getElementById('scoreModal').style.display = 'none';
+            document.querySelector('.quiz-content').scrollTop = 0;
+        }
+
+        // 添加退出測驗的函數
+        function exitQuiz() {
+            window.location.href = 'index.html?noSplash=true';  // 跳轉到首頁並避免顯示開場動畫
+        }
+    </script>
+
+</html>

@@ -1,0 +1,683 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <link rel="stylesheet" href="./style.css">
+</head>
+<body>
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+            font-family: Arial, sans-serif;
+            background-color: #FEFDF8;
+            overflow: hidden;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+        }
+    
+      
+        .page-container {
+            width: 320px;
+            height: 430px;
+            border-radius: 60px;
+            position: relative;
+            margin: 0 auto;
+            background-color: rgba(240, 243, 249, 0.95);
+            overflow: hidden;
+        }
+    
+        .splash {
+            position: absolute;
+            bottom: -430px;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            border-radius: 60px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 1000;
+            transition: bottom 1s ease-out;
+            background-color: transparent;
+        }
+    
+        .splash img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            border-radius: 60px;
+        }
+    
+        .splash.active {
+            bottom: 0;
+            transform: none;
+        }
+    
+        
+        .app-container {
+            width: 320px;
+            height: 430px;
+            border-radius: 60px;
+            background-color: #FEFDF8;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            overflow: hidden;
+            position: relative;
+        }
+  
+        .menu-icon {
+            position: absolute;
+            top: 30px;
+            left: 20px;
+            cursor: pointer;
+            z-index: 1000;
+        }
+    
+        .menu-icon div {
+            width: 30px;
+            height: 5px;
+            background-color: #C0D5EC;
+            margin: 4px 0;
+            border-radius: 3px;
+        }
+    
+        /* Score Section */
+        .score {
+            text-align: center;
+            color: #867fa5;
+            padding: 0 20px;
+            margin-top: 45px;
+        }
+    
+        .score p {
+            margin: 25px 0 5px 0;
+            font-size: 16px;
+        }
+    
+        .score-number {
+            font-size: 40px;
+            font-weight: bold;
+            color: #948FB3;
+            display: block;
+            margin: 0px 0px 10px 0px;
+            text-decoration: none;
+            transition: opacity 0.3s ease;
+        }
+    
+        .score-number:hover {
+            opacity: 0.8;
+        }
+    
+        /* Slide Menu */
+        .slide-menu {
+            position: absolute;
+            left: -300px;
+            top: 0;
+            width: 200px;
+            height: 100%;
+            background-color: rgba(240, 243, 249, 0.95);
+            padding: 80px 8px 20px 8px;
+            gap: 0px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            transition: left 0.3s ease;
+            box-shadow: 2px 0 5px rgba(50, 37, 84, 0.1);
+            z-index: 999;
+            
+            /* 添加不規則曲面效果 */
+            border-radius: 0 80% 80% 0 / 0 50% 50% 0;
+            
+            /* 添加額外的視覺效果 */
+            backdrop-filter: blur(5px);
+            border-right: 1px solid rgba(255, 255, 255, 0.3);
+        }
+
+        /* 當選單打開時的樣式 */
+        .slide-menu.open {
+            left: 0;
+            animation: menuSlide 0.3s ease forwards;
+        }
+
+        /* 添加動畫效果 */
+        @keyframes menuSlide {
+            from {
+                border-radius: 0 80% 80% 0 / 0 50% 50% 0;
+            }
+            to {
+                border-radius: 0 100% 100% 0 / 0 70% 70% 0;
+            }
+        }
+
+        /* 調整選單項目位置以配合新的形狀 */
+        .slide-menu a:not(.home-link) {
+            transform: translateX(-10px);  /* 稍微向左偏移以配合曲面 */
+            margin: 5px 0;
+            padding: 12px 25px;
+            /* 其他現有樣式保持不變 */
+        }
+
+        /* 選單內的連結基本樣式 */
+        .slide-menu a {
+            display: inline-block;
+            padding: 4px 25px;           /* 恢復為均等的左右 padding */
+            color: #3B3754;
+            text-decoration: none;
+            text-align: center;          /* 保持置中對齊 */
+            margin: 0px auto;
+            transition: background-color 0.3s;
+            border-radius: 25px;
+            width: fit-content;
+            position: relative;
+            left: 0;                     /* 移除向右偏移 */
+            font-size: 14px;
+            line-height: 1.2;
+        }
+
+        .slide-menu a:hover {
+            background-color: rgba(173, 172, 224, 0.3);
+        }
+
+        /* Home icon 專用樣式 */
+        .home-link {
+            position: absolute;
+            left: 0px;
+            top: 360px;
+            width: 24px;
+            height: 24px;
+            padding: 0;
+            margin: 0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 50%;
+            transition: background-color 0.3s;
+            z-index: 1000;
+            transform: translateX(-2px);
+        }
+
+        .home-link img {
+            width: 100%;
+            height: 100%;
+            object-fit: contain;
+        }
+
+        .home-link:hover {
+            background-color: rgba(173, 172, 224, 0.3);
+        }
+
+        /* 圓形區塊容器 */
+        .circles-container {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            height: 100%;
+            gap: 20px;
+            padding-top: 40px;
+        }
+
+        /* 圓形區塊共同樣式 */
+        .circle {
+            width: 200px;
+            height: 150px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-size: 20px;
+            cursor: pointer;
+            transition: transform 0.3s ease;
+        }
+
+        /* 上方圓形 */
+        .circle-top {
+            background-color: rgba(200, 220, 230, 0.5);
+            border-radius: 40% 40% 50% 50%;
+        }
+
+        /* 下方圓形 */
+        .circle-bottom {
+            background-color: rgba(230, 200, 220, 0.5);
+            border-radius: 50% 50% 40% 40%;
+        }
+        .circle-top:active {
+        background-color: rgba(200, 220, 230, 0.95);  /* 更深的顏色 */
+        transform: translateY(10px) scale(0.98);
+    }
+    .circle-bottom:active {
+        background-color: rgba(230, 200, 220, 0.95);  /* 更深的顏色 */
+        transform: translateY(-10px) scale(0.98);
+    } 
+
+
+        /* 超結樣式 */
+        .circle a {
+            text-decoration: none;
+            color: #3B3754; 
+            width: 100%;
+            height: 100%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        /* 頁面標題 */
+        .page-title {
+            position: absolute;
+            top: 33px;
+            left: 62px;
+            color: #3B3754;
+            font-size: 18px;
+            transform: none;
+        }
+
+        /* 選單容器調整 */
+        .slide-menu {
+            display: flex;
+            flex-direction: column;
+            align-items: center;         /* 保持置中對齊 */
+            padding: 80px 8px 60px 8px;
+            gap: 0px;
+        }
+
+        /* 特別為房子圖示的連結添加樣式 */
+        .slide-menu a.home-link {
+            padding: 0;
+            margin: 0;
+            position: absolute;
+            bottom: 30px;
+            left: 50px;
+            width: 24px;
+            height: 24px;
+            background: none;
+        }
+
+        .slide-menu a.home-link:hover {
+            background: none;
+        }
+
+        /* 當選單打開時顯示 home icon */
+        .slide-menu.open ~ .menu-container .menu-home-icon {
+            display: block;
+        }
+
+        .slide-menu a:not(.home-link) {
+            display: inline-block;
+            padding: 15px 25px;
+            color: #867fa5;
+            text-decoration: none;
+            text-align: center;
+            margin: 1px auto;
+            transition: background-color 0.3s;
+            border-radius: 25px;
+            width: fit-content;
+            position: relative;
+            font-size: 14px;
+            line-height: 1.2;
+            transform: translateY(-60px);
+        }
+
+        .slide-menu a:not(.home-link):hover {
+            background-color: rgba(134, 127, 165, 0.1);
+        }
+
+    
+        /* 添加 canvas 相關樣式 */
+        #drawingCanvas {
+            border: 2px solid #2f2b43;
+            border-radius: 10px;
+            background-color: #FEFDF8;
+            margin-top: 15px;
+            cursor: crosshair;
+        }
+    
+        /* 添加新的樣式 */
+        .drawing-area {
+            position: relative;
+            width: 250px;
+            height: 250px;
+            margin: 30px auto 15px auto;
+        }
+    
+        .drawing-area img {
+            width: 100%;
+            height: 100%;
+            position: absolute;
+            top: 0;
+            left: 0;
+        }
+    
+        #drawingCanvas {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 250px;
+            height: 250px;
+            cursor: crosshair;
+            background-image: url(./IMG/Vector\ \(1\).png);
+            background-size: contain;
+            background-repeat: no-repeat;
+            background-position: center;
+            border: none;
+            z-index: 1;
+        }
+    
+        /* 添加清除按鈕樣式 */
+        .clear-button {
+            position: absolute;
+            right: 10px;
+            bottom: 5px;
+            width: 24px;
+            height: 24px;
+            border: none;
+            background: none;
+            cursor: pointer;
+            padding: 2px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 2;
+            opacity: 0.7;
+            transition: opacity 0.3s ease;
+        }
+    
+        .clear-button img {
+            width: 25px;
+            height: 25px;
+            transform: rotate(180deg);
+        }
+    
+        .clear-button:hover {
+            opacity: 1;
+        }
+
+        /* 添加選單打開時的樣式 */
+        .slide-menu.open {
+            left: 0; /* 當有 open class 時移動到畫面中 */
+        }
+                /* 調整左上角圖示的大小 */
+                .menu-icon img {
+            width: 25px;  /* 縮小圖示 */
+            height: 25px;
+        }
+
+        /* 移除所有與 home-link 相關的 CSS */
+        .home-link,
+        .slide-menu a.home-link,
+        .slide-menu a.home-link:hover {
+            display: none;
+        }
+    </style>
+    
+    <body>
+        <!-- Splash Screen -->
+        <div class="splash page-container">
+            <a href="https://your-link.com"> <!-- Make the image clickable -->
+                <img src="./IMG/Apple Watch 38mm - 1.png" alt="Splash Screen">
+            </a>
+        </div>
+    
+        <!-- App Container -->
+        <div class="app-container page-container">
+            <!-- Hamburger Menu -->
+        
+                <!-- 漢堡選單容器 -->
+                <div class="menu-container">
+                    <!-- 選單圖示 -->
+                    <div class="menu-icon" onclick="toggleMenu()">
+                        <img src="./IMG/1.png" alt="Home" class="home-icon" style="display: none;" onclick="goHome(event)">
+                        <div class="menu-line"></div>
+                        <div class="menu-line"></div>
+                        <div class="menu-line"></div>
+                    </div>
+                </div>
+        
+                <!-- 側邊選單 -->
+                <div class="slide-menu" id="slideMenu">
+               
+                    <a href="http://127.0.0.1:5501/4.html">學習情緒</a>
+                    <a href="http://127.0.0.1:5501/2.html">社交練習</a>
+                    <a href="http://127.0.0.1:5501/10.html">心情專區</a>
+                    <a href="http://127.0.0.1:5501/9.html">定位專區</a>
+                    <a href="http://127.0.0.1:5501/pic.html">行為紀錄</a>
+                   
+                </div>
+           
+        
+            <!-- Score Section -->
+            <div class="score">
+                <div class="drawing-area">
+                    <canvas id="drawingCanvas"></canvas>
+                    <button class="clear-button">
+                        <img src="./IMG/333.png" alt="Clear" width="24" height="24">
+                    </button>
+                </div>
+                <p>今日分數:</p>
+                <a href="http://127.0.0.1:5501/3.html" class="score-number">30</a>
+            </div>
+    
+        </div>
+        
+    
+        <script>
+            window.addEventListener('load', () => {
+                const splash = document.querySelector('.splash');
+                const appContainer = document.querySelector('.app-container');
+    
+                // 檢查 URL 是否包含 noSplash 參數
+                const urlParams = new URLSearchParams(window.location.search);
+                const noSplash = urlParams.get('noSplash');
+
+                if (noSplash === 'true') {
+                    // 如果有 noSplash 參數，直接隱藏 splash 並顯示主內容
+                    splash.style.display = 'none';
+                    appContainer.style.display = 'block';
+                } else {
+                    // 原有的 splash 動畫邏輯
+                    setTimeout(() => {
+                        splash.style.bottom = '0';
+                    }, 300);
+
+                    setTimeout(() => {
+                        splash.style.display = 'none';
+                        appContainer.style.display = 'block';
+                    }, 3000);
+                }
+            });
+      
+    
+ 
+    
+            window.addEventListener('load', function() {
+                const canvas = document.getElementById('drawingCanvas');
+                const ctx = canvas.getContext('2d');
+                
+                // 設置畫布實際大小
+                canvas.width = 250;
+                canvas.height = 250;
+                
+                // 設置畫筆樣式
+                ctx.strokeStyle = '#6C5DD3';
+                ctx.lineWidth = 2;
+                ctx.lineCap = 'round';
+                
+                let isDrawing = false;
+                let lastX = 0;
+                let lastY = 0;
+                
+                // 歷史記錄
+                let drawingHistory = [];
+                let currentStep = -1;
+                
+                // 保存狀態
+                function saveState() {
+                    currentStep++;
+                    if (currentStep < drawingHistory.length) {
+                        drawingHistory.length = currentStep;
+                    }
+                    drawingHistory.push(canvas.toDataURL());
+                }
+                
+                // 初始保存空白畫布
+                saveState();
+                
+                // 滑鼠位置計算
+                function getMousePos(canvas, e) {
+                    const rect = canvas.getBoundingClientRect();
+                    const scaleX = canvas.width / rect.width;
+                    const scaleY = canvas.height / rect.height;
+                    
+                    return {
+                        x: (e.clientX - rect.left) * scaleX,
+                        y: (e.clientY - rect.top) * scaleY
+                    };
+                }
+                
+                // 開始繪圖
+                function startDrawing(e) {
+                    isDrawing = true;
+                    const pos = getMousePos(canvas, e);
+                    [lastX, lastY] = [pos.x, pos.y];
+                }
+                
+                // 繪圖過程
+                function draw(e) {
+                    if (!isDrawing) return;
+                    
+                    const pos = getMousePos(canvas, e);
+                    ctx.beginPath();
+                    ctx.moveTo(lastX, lastY);
+                    ctx.lineTo(pos.x, pos.y);
+                    ctx.stroke();
+                    
+                    [lastX, lastY] = [pos.x, pos.y];
+                }
+                
+                // 結束繪圖
+                function endDrawing() {
+                    if (isDrawing) {
+                        isDrawing = false;
+                        saveState();
+                    }
+                }
+                
+                // 觸控事件處理
+                function handleTouch(e) {
+                    e.preventDefault();
+                    const touch = e.touches[0];
+                    const rect = canvas.getBoundingClientRect();
+                    const scaleX = canvas.width / rect.width;
+                    const scaleY = canvas.height / rect.height;
+                    
+                    const x = (touch.clientX - rect.left) * scaleX;
+                    const y = (touch.clientY - rect.top) * scaleY;
+                    
+                    if (e.type === 'touchstart') {
+                        isDrawing = true;
+                        [lastX, lastY] = [x, y];
+                    } else if (e.type === 'touchmove' && isDrawing) {
+                        ctx.beginPath();
+                        ctx.moveTo(lastX, lastY);
+                        ctx.lineTo(x, y);
+                        ctx.stroke();
+                        [lastX, lastY] = [x, y];
+                    }
+                }
+                
+                // 復原功能
+                function undo() {
+                    if (currentStep > 0) {
+                        currentStep--;
+                        const img = new Image();
+                        img.src = drawingHistory[currentStep];
+                        img.onload = function() {
+                            ctx.clearRect(0, 0, canvas.width, canvas.height);
+                            ctx.drawImage(img, 0, 0);
+                        }
+                    }
+                }
+                
+                // 事件監聽器
+                canvas.addEventListener('mousedown', startDrawing);
+                canvas.addEventListener('mousemove', draw);
+                canvas.addEventListener('mouseup', endDrawing);
+                canvas.addEventListener('mouseout', endDrawing);
+                
+                canvas.addEventListener('touchstart', handleTouch);
+                canvas.addEventListener('touchmove', handleTouch);
+                canvas.addEventListener('touchend', endDrawing);
+                
+                // 設置復原按鈕
+                document.querySelector('.clear-button').innerHTML = `
+                    <img src="./IMG/333.png" alt="Undo" width="24" height="24" style="transform: scaleX(-1);">
+                `;
+                document.querySelector('.clear-button').onclick = undo;
+            });
+    
+            // 添加清空畫布功能
+            document.querySelector('.clear-button').addEventListener('click', function() {
+                const canvas = document.getElementById('drawingCanvas');
+                const ctx = canvas.getContext('2d');
+                ctx.clearRect(0, 0, canvas.width, canvas.height);
+            });
+    
+            document.addEventListener('DOMContentLoaded', function() {
+                const savedScore = localStorage.getItem('quizScore');
+                const scoreNumber = document.querySelector('.score-number');
+                if (savedScore !== null && scoreNumber) {
+                    scoreNumber.textContent = savedScore;
+                }
+            });
+        </script>
+              <script>
+                function goHome(event) {
+            event.stopPropagation();
+            window.location.href = 'index.html?noSplash=true';
+        }
+
+        function toggleMenu() {
+            const menu = document.getElementById('slideMenu');
+            const menuIcon = document.querySelector('.menu-icon');
+            const menuLines = document.querySelectorAll('.menu-line');
+            const homeIcon = document.querySelector('.home-icon');
+            
+            menu.classList.toggle('open');
+            menuIcon.classList.toggle('menu-open');
+            
+            // 切換圖標顯示
+            if (menu.classList.contains('open')) {
+                menuLines.forEach(line => line.style.display = 'none');
+                homeIcon.style.display = 'block';
+            } else {
+                menuLines.forEach(line => line.style.display = 'block');
+                homeIcon.style.display = 'none';
+            }
+        }
+
+        // 添加點擊頁面關閉選單的功能
+        document.addEventListener('click', function(event) {
+            const menu = document.getElementById('slideMenu');
+            const menuIcon = document.querySelector('.menu-icon');
+            const menuContainer = document.querySelector('.menu-container');
+            
+            // 如果點擊的不是選單和選單圖標
+            if (!menu.contains(event.target) && 
+                !menuContainer.contains(event.target) && 
+                menu.classList.contains('open')) {
+                
+                toggleMenu();
+            }
+        });
+
+        // 防止選單內部點擊觸發關閉
+        document.querySelector('.slide-menu').addEventListener('click', function(event) {
+            event.stopPropagation();
+        });
+            </script>
+</body>
+</html>

@@ -1,0 +1,845 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <style>
+      body {
+            margin: 0;
+            padding: 0;
+            font-family: Arial, sans-serif;
+            background-color: #fdfcfb;
+            overflow: hidden;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+        }
+
+        /* 基礎容器樣式 */
+        .page-container {
+            width: 320px;
+            height: 430px;
+            border-radius: 60px;
+            position: relative;
+            margin: 0 auto;
+            background-image: url(./IMG/map-bg.png);
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            overflow: hidden;
+        }
+
+        /* 漢堡選單圖示容器 */
+        .menu-container {
+            position: absolute;
+            top: 30px;
+            left: 20px;
+            z-index: 1000;
+            display: flex;
+            flex-direction: column;
+            gap: 20px;  /* 調整圖示之間的間距 */
+        }
+
+        /* 漢堡選單圖示 */
+        .menu-icon {
+            width: 30px;
+            height: 30px;
+            position: relative;
+            cursor: pointer;
+        }
+
+        .menu-line {
+            width: 30px;
+            height: 5px;
+            background-color: #C0D5EC;
+            margin: 4px 0;
+            border-radius: 3px;
+            transition: all 0.3s ease;
+        }
+
+        .home-icon {
+            width: 24px;
+            height: 24px;
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            display: none;
+        }
+
+        /* 當選單打開時的樣式 */
+        .menu-open .menu-line {
+            display: none;
+        }
+
+        .menu-open .home-icon {
+            display: block;
+        }
+
+        /* 移除連結的預設樣式 */
+        .icon-link {
+            text-decoration: none;
+            color: #3B3754;
+            width: 100%;
+            height: 100%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        /* 側邊選單 */
+        .slide-menu {
+            position: absolute;
+            left: -300px;
+            top: 0;
+            width: 200px;
+            height: 100%;
+            background-color: rgba(240, 243, 249, 0.95);
+            padding: 80px 8px 20px 8px;
+            gap: 0px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            transition: left 0.3s ease;
+            box-shadow: 2px 0 5px rgba(50, 37, 84, 0.1);
+            z-index: 999;
+            border-radius: 0 80% 80% 0 / 0 50% 50% 0;
+            backdrop-filter: blur(5px);
+            border-right: 1px solid rgba(255, 255, 255, 0.3);
+        }
+
+        .slide-menu.open {
+            left: 0;
+            animation: menuSlide 0.3s ease forwards;
+        }
+
+        @keyframes menuSlide {
+            from {
+                border-radius: 0 80% 80% 0 / 0 50% 50% 0;
+            }
+            to {
+                border-radius: 0 100% 100% 0 / 0 70% 70% 0;
+            }
+        }
+
+        .slide-menu a {
+            transform: translateX(-10px);
+            margin: 5px 0;
+            padding: 12px 25px;
+            color: #3B3754;
+            text-decoration: none;
+            text-align: center;
+            transition: background-color 0.3s;
+            border-radius: 25px;
+            width: fit-content;
+            font-size: 14px;
+            line-height: 1.2;
+        }
+
+        .slide-menu a:hover {
+            background-color: rgba(173, 172, 224, 0.3);
+        }
+
+        /* Home icon 專用樣式 */
+        .home-link {
+            position: absolute;
+            left: 0px;
+            top: 360px;
+            width: 24px;
+            height: 24px;
+            padding: 0;
+            margin: 0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 50%;
+            transition: background-color 0.3s;
+            z-index: 1000;
+            transform: translateX(-2px);
+        }
+
+        .home-link img {
+            width: 100%;
+            height: 100%;
+            object-fit: contain;
+        }
+
+        .home-link:hover {
+            background-color: rgba(173, 172, 224, 0.3);
+        }
+
+
+        .page-title {
+            position: absolute;
+            top: 33px;
+            left: 62px;
+            color: #3B3754;
+            font-size: 18px;
+            transform: none;
+        }
+
+        /* 選單容器調整 */
+        .slide-menu {
+            display: flex;
+            flex-direction: column;
+            align-items: center;         /* 保持置中對齊 */
+            padding: 80px 8px 60px 8px;
+            gap: 0px;
+        }
+
+        /* 特別為房子圖示的連結添加樣式 */
+        .slide-menu a.home-link {
+            padding: 0;
+            margin: 0;
+            position: absolute;
+            bottom: 30px;
+            left: 50px;
+            width: 24px;
+            height: 24px;
+            background: none;
+        }
+
+        .slide-menu a.home-link:hover {
+            background: none;
+        }
+
+        /* 當選單打開時顯示 home icon */
+        .slide-menu.open ~ .menu-container .menu-home-icon {
+            display: block;
+        }
+
+        /* 側邊選單樣式 */
+        .slide-menu {
+            position: absolute;
+            left: -300px;
+            top: 0;
+            width: 200px;
+            height: 100%;
+            background-color: rgba(240, 243, 249, 0.95);
+            border-top-right-radius: 50%;
+            border-bottom-right-radius: 50%;
+            padding: 80px 8px 20px 8px;
+            gap: 0px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            transition: left 0.3s ease;
+            box-shadow: 2px 0 5px rgba(50, 37, 84, 0.1);
+            z-index: 999;
+        }
+
+   
+        .slide-menu a:not(.home-link) {
+            display: inline-block;
+            padding: 15px 25px;
+            color: #867fa5;
+            text-decoration: none;
+            text-align: center;
+            margin: 1px auto;
+            transition: background-color 0.3s;
+            border-radius: 25px;
+            width: fit-content;
+            position: relative;
+            font-size: 14px;
+            line-height: 1.2;
+            transform: translateY(-60px);
+        }
+
+        .slide-menu a:not(.home-link):hover {
+            background-color: rgba(134, 127, 165, 0.1);
+        }
+
+        .home-link {
+            position: absolute;
+            left: 20px;
+            top: 380px;
+            width: 24px;
+            height: 24px;
+            padding: 0;
+            margin: 0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 50%;
+            transition: background-color 0.3s;
+            z-index: 1000;
+        }
+
+        .home-link img {
+            width: 100%;
+            height: 100%;
+            object-fit: contain;
+        }
+
+        .home-link:hover {
+            background-color: rgba(173, 172, 224, 0.3);
+        }
+
+        /* 新增的地圖樣式 */
+        .custom-map {
+            position: absolute;
+            top: calc(50% + 5px);
+            left: 50%;
+            transform: translate(-50%, -50%);
+            width: 280px;
+            height: 280px;
+            border-radius: 30px;
+            overflow: hidden;
+            background-color: #f4f7f9;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+            z-index: 1;
+            cursor: default;
+            /* 提高整體清晰度 */
+            image-rendering: -webkit-optimize-contrast;
+            image-rendering: crisp-edges;
+        }
+
+        .custom-map.grabbing {
+            cursor: grabbing;
+        }
+
+        .custom-map .map-content {
+            position: relative;
+            width: 100%;
+            height: 100%;
+            background-image: url('./IMG/map.webp');
+            background-size: cover;
+            background-position: center;
+            transform-origin: center;
+            will-change: transform;
+            /* 提高背景圖片質量 */
+            image-rendering: -webkit-optimize-contrast;
+            image-rendering: crisp-edges;
+            /* 優化縮放時的平滑度 */
+            backface-visibility: hidden;
+            -webkit-font-smoothing: subpixel-antialiased;
+        }
+
+        /* 優化縮放時的效果 */
+        .custom-map .map-content * {
+            backface-visibility: hidden;
+            -webkit-font-smoothing: subpixel-antialiased;
+        }
+
+        /* 確保標記的清晰度 */
+        .custom-map .marker {
+            /* 保持原有樣式 */
+            -webkit-font-smoothing: antialiased;
+            text-rendering: optimizeLegibility;
+        }
+
+        /* 優化過渡動畫 */
+        .custom-map .map-content.zooming {
+            transition: transform 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        /* 背景網格 - 小路 */
+        .custom-map .roads {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            background-image: 
+                linear-gradient(rgba(200,200,200,0.2) 1px, transparent 1px),
+                linear-gradient(90deg, rgba(200,200,200,0.2) 1px, transparent 1px);
+            background-size: 20px 20px;
+        }
+
+        /* 次要道路 */
+        .custom-map .secondary-roads {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+        }
+
+        .custom-map .secondary-road {
+            position: absolute;
+            background-color: #fff;
+            box-shadow: 0 0 4px rgba(0,0,0,0.1);
+        }
+
+        .custom-map .road-h1 {
+            height: 8px;
+            width: 100%;
+            top: 30%;
+        }
+
+        .custom-map .road-h2 {
+            height: 8px;
+            width: 100%;
+            top: 60%;
+        }
+
+        .custom-map .road-v1 {
+            width: 8px;
+            height: 100%;
+            left: 25%;
+        }
+
+        .custom-map .road-v2 {
+            width: 8px;
+            height: 100%;
+            right: 35%;
+        }
+
+        /* 主要道路 */
+        .custom-map .main-road {
+            position: absolute;
+            background-color: #4c6ef5;
+            opacity: 0.7;
+        }
+
+        .custom-map .main-road-1 {
+            width: 16px;
+            height: 140%;
+            left: 45%;
+            top: -20%;
+            transform: rotate(15deg);
+        }
+
+        /* 河流系統 */
+        .custom-map .river-system {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+        }
+
+        .custom-map .river {
+            position: absolute;
+            background: linear-gradient(to right,
+                rgba(137, 207, 240, 0.4),
+                rgba(137, 207, 240, 0.8),
+                rgba(137, 207, 240, 0.4));
+        }
+
+        .custom-map .river-main {
+            width: 40px;
+            height: 140%;
+            left: 35%;
+            top: -20%;
+            transform: rotate(15deg);
+        }
+
+        .custom-map .river-branch {
+            width: 20px;
+            height: 60%;
+            left: 45%;
+            top: 20%;
+            transform: rotate(30deg);
+        }
+
+        /* 建築區域 */
+        .custom-map .buildings {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+        }
+
+        .custom-map .building {
+            position: absolute;
+            background-color: #e0e0e0;
+            border-radius: 2px;
+        }
+
+        .custom-map .building-block {
+            position: absolute;
+            background-color: rgba(224, 224, 224, 0.7);
+            border-radius: 4px;
+        }
+
+        .custom-map .block-1 {
+            width: 60px;
+            height: 40px;
+            top: 15%;
+            left: 10%;
+        }
+
+        .custom-map .block-2 {
+            width: 50px;
+            height: 45px;
+            top: 65%;
+            right: 15%;
+        }
+
+        /* 綠地區域 */
+        .custom-map .green-areas {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+        }
+
+        .custom-map .green-area {
+            position: absolute;
+            background-color: rgba(144, 238, 144, 0.3);
+            border-radius: 6px;
+        }
+
+        .custom-map .park-1 {
+            width: 40px;
+            height: 30px;
+            top: 25%;
+            right: 20%;
+        }
+
+        .custom-map .park-2 {
+            width: 35px;
+            height: 35px;
+            bottom: 25%;
+            left: 30%;
+        }
+
+        /* 標記點 */
+        .custom-map .marker {
+            position: absolute;
+            padding: 4px 8px;
+            border-radius: 15px;
+            font-family: 'Comic Neue', 'Fredoka', cursive;
+            font-size: 11px;
+            font-weight: 700;
+            letter-spacing: 0.5px;
+            z-index: 10;
+            transition: all 0.3s ease;
+            cursor: pointer;
+            box-shadow: 0 2px 6px rgba(0,0,0,0.12);
+            display: flex;
+            align-items: center;
+            gap: 4px;
+            border: 2px solid white;
+        }
+
+        .custom-map .marker:hover {
+            transform: scale(1.1) rotate(2deg);
+            box-shadow: 0 3px 8px rgba(0,0,0,0.15);
+        }
+
+        .custom-map .home-marker {
+            top: 45%;
+            left: 35%;
+            background: linear-gradient(135deg, #E0F4FF, #B9E9FC);
+            color: #7CB9E8;
+        }
+
+        .custom-map .school-marker {
+            top: 35%;
+            right: 30%;
+            background: linear-gradient(135deg, #E8F6EF, #B8E0D2);
+            color: #8FBC8F;
+        }
+
+        .custom-map .marker::before {
+            content: '';
+            display: inline-block;
+            width: 6px;
+            height: 6px;
+            border-radius: 50%;
+            background: currentColor;
+            box-shadow: 0 0 4px currentColor;
+        }
+
+        /* 添加可愛的動畫效果 */
+        @keyframes bounce {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-2px); }
+        }
+
+        .custom-map .marker:hover::before {
+            animation: bounce 0.8s infinite;
+        }
+
+        /* 地名標籤 */
+        .custom-map .label {
+            position: absolute;
+            font-size: 10px;
+            color: #999;
+            white-space: nowrap;
+        }
+
+        /* 控制按鈕 */
+        .map-controls {
+            position: absolute;
+            right: 10px;
+            bottom: 10px;
+            display: flex;
+            flex-direction: column;
+            gap: 5px;
+            z-index: 3;
+        }
+
+        .map-controls button {
+            width: 30px;
+            height: 30px;
+            border: none;
+            border-radius: 4px;
+            background: white;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.2);
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 18px;
+        }
+
+        .map-controls button:hover {
+            background: #f8f9fa;
+        }
+
+        /* Google Fonts 引入可愛字體 */
+        @import url('https://fonts.googleapis.com/css2?family=Fredoka:wght@400;500&family=Comic+Neue:wght@700&display=swap');
+
+    </style>
+</head>
+<body>
+    <div class="page-container">
+        <!-- 漢堡選單容器 -->
+        <div class="menu-container">
+            <div class="menu-icon" onclick="toggleMenu()">
+                <img src="./IMG/1.png" alt="Home" class="home-icon" style="display: none;" onclick="goHome(event)">
+                <div class="menu-line"></div>
+                <div class="menu-line"></div>
+                <div class="menu-line"></div>
+            </div>
+        </div>
+
+        <!-- 頁面標題 -->
+        <div class="page-title">定位專區</div>
+
+   
+
+        <!-- 側邊選單 -->
+        <div class="slide-menu" id="slideMenu">
+            <a href="http://127.0.0.1:5501/4.html">學習情緒</a>
+            <a href="http://127.0.0.1:5501/2.html">社交練習</a>
+            <a href="http://127.0.0.1:5501/10.html">心情專區</a>
+            <a href="http://127.0.0.1:5501/9.html">定位專區</a>
+            <a href="http://127.0.0.1:5501/pic.html">行為紀錄</a>
+        </div>
+    </div>
+
+    <div class="custom-map">
+        <div class="map-content">
+            <!-- 地图内容 -->
+            <div class="marker home-marker">HOME</div>
+            <div class="marker school-marker">SCHOOL</div>
+        </div>
+    </div>
+
+    <script>
+        function goHome(event) {
+            event.stopPropagation();
+            window.location.href = 'index.html?noSplash=true';
+        }
+
+        function toggleMenu() {
+            const menu = document.getElementById('slideMenu');
+            const menuIcon = document.querySelector('.menu-icon');
+            const menuLines = document.querySelectorAll('.menu-line');
+            const homeIcon = document.querySelector('.home-icon');
+            
+            menu.classList.toggle('open');
+            menuIcon.classList.toggle('menu-open');
+            
+            if (menu.classList.contains('open')) {
+                menuLines.forEach(line => line.style.display = 'none');
+                homeIcon.style.display = 'block';
+            } else {
+                menuLines.forEach(line => line.style.display = 'block');
+                homeIcon.style.display = 'none';
+            }
+        }
+
+        document.addEventListener('click', function(event) {
+            const menu = document.getElementById('slideMenu');
+            const menuIcon = document.querySelector('.menu-icon');
+            const menuContainer = document.querySelector('.menu-container');
+            
+            if (!menu.contains(event.target) && 
+                !menuContainer.contains(event.target) && 
+                menu.classList.contains('open')) {
+                
+                toggleMenu();
+            }
+        });
+
+        document.querySelector('.slide-menu').addEventListener('click', function(event) {
+            event.stopPropagation();
+        });
+
+        class InteractiveMap {
+            constructor() {
+                this.map = document.querySelector('.custom-map');
+                this.content = document.querySelector('.map-content');
+                this.isDragging = false;
+                this.lastX = 0;
+                this.lastY = 0;
+                this.translateX = 0;
+                this.translateY = 0;
+                this.scale = 1;
+
+                this.setupEventListeners();
+                this.setupControls();
+                this.setupMarkers();
+                this.setupHighQualityRendering();
+            }
+
+            setupEventListeners() {
+                // 滑鼠事件
+                this.map.addEventListener('mousedown', (e) => {
+                    this.isDragging = true;
+                    this.lastX = e.clientX;
+                    this.lastY = e.clientY;
+                });
+
+                document.addEventListener('mousemove', (e) => {
+                    if (!this.isDragging) return;
+                    
+                    const deltaX = e.clientX - this.lastX;
+                    const deltaY = e.clientY - this.lastY;
+                    
+                    this.translateX += deltaX;
+                    this.translateY += deltaY;
+                    
+                    this.lastX = e.clientX;
+                    this.lastY = e.clientY;
+                    
+                    this.updateTransform();
+                });
+
+                document.addEventListener('mouseup', () => {
+                    this.isDragging = false;
+                });
+
+                // 滾輪縮放
+                this.map.addEventListener('wheel', (e) => {
+                    e.preventDefault();
+                    const delta = e.deltaY * -0.01;
+                    this.zoom(delta);
+                });
+
+                // 觸控事件
+                this.map.addEventListener('touchstart', (e) => {
+                    if (e.touches.length === 1) {
+                        this.isDragging = true;
+                        this.lastX = e.touches[0].clientX;
+                        this.lastY = e.touches[0].clientY;
+                    }
+                });
+
+                this.map.addEventListener('touchmove', (e) => {
+                    e.preventDefault();
+                    if (!this.isDragging) return;
+                    
+                    const touch = e.touches[0];
+                    const deltaX = touch.clientX - this.lastX;
+                    const deltaY = touch.clientY - this.lastY;
+                    
+                    this.translateX += deltaX;
+                    this.translateY += deltaY;
+                    
+                    this.lastX = touch.clientX;
+                    this.lastY = touch.clientY;
+                    
+                    this.updateTransform();
+                });
+
+                this.map.addEventListener('touchend', () => {
+                    this.isDragging = false;
+                });
+            }
+
+            setupControls() {
+                const controls = document.createElement('div');
+                controls.className = 'map-controls';
+                controls.innerHTML = `
+                    <button class="zoom-in">+</button>
+                    <button class="zoom-out">−</button>
+                `;
+                this.map.appendChild(controls);
+
+                controls.querySelector('.zoom-in').onclick = () => this.zoom(0.2);
+                controls.querySelector('.zoom-out').onclick = () => this.zoom(-0.2);
+            }
+
+            zoom(delta) {
+                const newScale = Math.min(Math.max(1, this.scale + delta), 3);
+                this.scale = newScale;
+                this.updateTransform();
+            }
+
+            setupHighQualityRendering() {
+                // 在縮放開始時添加優化類
+                this.content.addEventListener('transitionstart', () => {
+                    this.content.classList.add('zooming');
+                });
+
+                // 在縮放結束時移除優化類
+                this.content.addEventListener('transitionend', () => {
+                    this.content.classList.remove('zooming');
+                });
+            }
+
+            updateTransform() {
+                const maxTranslate = (this.scale - 1) * 140;
+                this.translateX = Math.min(Math.max(this.translateX, -maxTranslate), maxTranslate);
+                this.translateY = Math.min(Math.max(this.translateY, -maxTranslate), maxTranslate);
+
+                // 使用更精確的transform
+                requestAnimationFrame(() => {
+                    this.content.style.transform = `
+                        translate3d(${this.translateX}px, ${this.translateY}px, 0)
+                        scale(${this.scale})
+                    `;
+                });
+            }
+
+            setupMarkers() {
+                const markers = {
+                    home: { element: document.querySelector('.home-marker') },
+                    school: { element: document.querySelector('.school-marker') }
+                };
+
+                Object.entries(markers).forEach(([type, marker]) => {
+                    marker.element.addEventListener('click', () => {
+                        this.zoomToMarker(marker.element);
+                    });
+                });
+            }
+
+            zoomToMarker(markerElement) {
+                // 設置縮放級別
+                this.scale = 2;
+
+                // 獲取標記的位置
+                const markerRect = markerElement.getBoundingClientRect();
+                const mapRect = this.map.getBoundingClientRect();
+
+                // 計算標記相對於地圖的中心位置
+                const markerCenterX = markerRect.left + markerRect.width / 2;
+                const markerCenterY = markerRect.top + markerRect.height / 2;
+                const mapCenterX = mapRect.left + mapRect.width / 2;
+                const mapCenterY = mapRect.top + mapRect.height / 2;
+
+                // 計算需要移動的距離
+                const deltaX = mapCenterX - markerCenterX;
+                const deltaY = mapCenterY - markerCenterY;
+
+                // 根據當前縮放比例調整位移
+                this.translateX += deltaX / this.scale;
+                this.translateY += deltaY / this.scale;
+
+                // 添加過渡動畫
+                this.content.style.transition = 'transform 0.5s ease-out';
+                
+                this.updateTransform();
+
+                // 移除過渡效果
+                setTimeout(() => {
+                    this.content.style.transition = 'none';
+                }, 500);
+            }
+        }
+
+        new InteractiveMap();
+    </script>
+</body>
+</html>

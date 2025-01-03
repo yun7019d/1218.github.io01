@@ -1,0 +1,478 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>行為紀錄</title>
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+            font-family: Arial, sans-serif;
+            background-color: #fdfcfb;
+            overflow: hidden;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+        }
+
+        /* 基礎容器樣式 */
+        .page-container {
+            width: 352px;
+            height: 430px;
+            border-radius: 60px;
+            position: relative;
+            margin: 0 auto;
+            background-color: #FEFDF8;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            overflow: hidden;
+        }
+
+        /* 漢堡選單圖示容器 */
+        .menu-container {
+            position: absolute;
+            top: 30px;
+            left: 20px;
+            z-index: 1000;
+            display: flex;
+            flex-direction: column;
+            gap: 20px;  /* 調整圖示之間的間距 */
+        }
+
+        /* 漢堡選單圖示 */
+        .menu-icon {
+            cursor: pointer;
+        }
+
+        .menu-icon div {
+            width: 30px;
+            height: 5px;
+            background-color: #C0D5EC;
+            margin: 4px 0;
+            border-radius: 3px;
+        }
+
+        .page-title {
+            position: absolute;
+            top: 33px;
+            left: 62px;
+            color: #3B3754;
+            font-size: 18px;
+        }
+
+        .content-container {
+            margin-top: 80px;
+            padding: 20px;
+            height: calc(100% - 100px);
+            position: relative;
+            display: flex;
+            flex-direction: column;
+            align-items: center;  /* 水平置中 */
+        }
+
+        .behavior-image {
+            width: 90%;  /* 調整寬度 */
+            height: 200px;
+            border-radius: 30px;
+            overflow: hidden;
+            margin-bottom: 20px;
+            display: flex;
+            justify-content: center;  /* 圖片水平置中 */
+            align-items: center;      /* 圖片垂直置中 */
+        }
+
+        .behavior-image img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        .bottom-section {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            height: 150px;
+            background-color: #FFE8E8;
+            border-radius: 50% 50% 0 0;
+            display: flex;
+            justify-content: center;
+            align-items: flex-start;
+            padding-top: 20px;
+        }
+
+        .message-box {
+            width: 180px;
+            padding: 10px 20px;
+            color: #3B3754;
+            font-size: 17px;
+            text-align: center;
+            position: absolute;
+            top: 50px;
+            left: 50%;
+            transform: translateX(-50%);
+            line-height: 1.5;
+            word-wrap: break-word;
+            max-width: 180px;
+            background-color: transparent;
+            border-radius: 15px;
+        }
+
+        .score-circle {
+            position: absolute;
+            bottom: 45px;
+            right: 20px;
+            top: -30px;
+            width: 85px;
+            height: 85px;
+            border-radius: 50%;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            z-index: 2;
+            background-color: #f9b1b1;
+ 
+        }
+
+        .score-number {
+            font-size: 36px;
+            color: #3B3754;
+            line-height: 1;
+        }
+
+        .score-unit {
+            font-size: 14px;
+            color: #3B3754;
+            margin-top: 5px;
+        }
+
+        .slide-menu {
+            position: fixed;
+            left: -250px;
+            top: 0;
+            width: 200px;
+            height: 100vh;
+            background-color: rgba(240, 243, 249, 0.95);
+            transition: left 0.3s ease;
+            z-index: 999;
+            padding: 120px 8px 20px 8px;
+            gap: 0px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        .slide-menu.open {
+            left: 0;
+        }
+
+        /* 選單內的連結基本樣式 */
+        .slide-menu a {
+            display: inline-block;
+            padding: 4px 25px;
+            color: #3B3754;
+            text-decoration: none;
+            text-align: center;
+            margin: 8px 0;
+            transition: background-color 0.3s;
+            border-radius: 25px;
+            width: fit-content;
+            position: relative;
+            left: 0;                     /* 移除向右偏移 */
+            font-size: 14px;
+            line-height: 1.2;
+        }
+
+        .slide-menu a:hover {
+            background-color: rgba(173, 172, 224, 0.3);
+        }
+
+        /* Home icon 專用樣式 */
+        .home-link {
+            position: absolute;
+            left: 0px;
+            top: 360px;
+            width: 24px;
+            height: 24px;
+            padding: 0;
+            margin: 0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 50%;
+            transition: background-color 0.3s;
+            z-index: 1000;
+            transform: translateX(-2px);
+        }
+
+        .home-link img {
+            width: 100%;
+            height: 100%;
+            object-fit: contain;
+        }
+
+        .home-link:hover {
+            background-color: rgba(173, 172, 224, 0.3);
+        }
+
+
+
+
+        /* 超結樣式 */
+        .circle a {
+            text-decoration: none;
+            color: #3B3754; 
+            width: 100%;
+            height: 100%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        /* 頁面標題 */
+        .page-title {
+            position: absolute;
+            top: 33px;
+            left: 62px;
+            color: #3B3754;
+            font-size: 18px;
+            transform: none;
+        }
+
+        /* 選單容器調整 */
+        .slide-menu {
+            display: flex;
+            flex-direction: column;
+            align-items: center;         /* 保持置中對齊 */
+            padding: 80px 8px 60px 8px;
+            gap: 0px;
+        }
+
+        /* 特別為房子圖示的連結添加樣式 */
+        .slide-menu a.home-link {
+            padding: 0;
+            margin: 0;
+            position: absolute;
+            bottom: 30px;
+            left: 50px;
+            width: 24px;
+            height: 24px;
+            background: none;
+        }
+
+        .slide-menu a.home-link:hover {
+            background: none;
+        }
+
+        /* 當選單打開時顯示 home icon */
+        .slide-menu.open ~ .menu-container .menu-home-icon {
+            display: block;
+        }
+
+        /* 側邊選單樣式 */
+        .slide-menu {
+            position: absolute;
+            left: -300px;
+            top: 0;
+            width: 200px;
+            height: 100%;
+            background-color: rgba(240, 243, 249, 0.95);
+            border-top-right-radius: 50%;
+            border-bottom-right-radius: 50%;
+            padding: 80px 8px 20px 8px;
+            gap: 0px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            transition: left 0.3s ease;
+            box-shadow: 2px 0 5px rgba(50, 37, 84, 0.1);
+            z-index: 999;
+        }
+
+   
+        .slide-menu a:not(.home-link) {
+            display: inline-block;
+            padding: 15px 25px;
+            color: #867fa5;
+            text-decoration: none;
+            text-align: center;
+            margin: 1px auto;
+            transition: background-color 0.3s;
+            border-radius: 25px;
+            width: fit-content;
+            position: relative;
+            font-size: 14px;
+            line-height: 1.2;
+            transform: translateY(-60px);
+        }
+
+        .slide-menu a:not(.home-link):hover {
+            background-color: rgba(134, 127, 165, 0.1);
+        }
+
+        .home-link {
+            position: absolute;
+            left: 20px;
+            top: 380px;
+            width: 24px;
+            height: 24px;
+            padding: 0;
+            margin: 0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 50%;
+            transition: background-color 0.3s;
+            z-index: 1000;
+        }
+
+        .home-link img {
+            width: 100%;
+            height: 100%;
+            object-fit: contain;
+        }
+
+        .home-link:hover {
+            background-color: rgba(173, 172, 224, 0.3);
+        }
+
+        .profile-button {
+            position: absolute;
+            top: 40px;
+            right: 30px;
+            width: 30px;
+            height: 30px;
+            border-radius: 50%;
+            overflow: hidden;
+            cursor: pointer;
+            z-index: 1000;
+            background-color: white;  /* 白色背景 */
+            transition: transform 0.3s ease;  /* 過渡效果 */
+        }
+
+        .profile-button:hover {
+            transform: scale(1.1);  /* 懸停時放大 */
+        }
+
+        .profile-button img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+    /* 添加選單打開時的樣式 */
+    .slide-menu.open {
+            left: 0; /* 當有 open class 時移動到畫面中 */
+        }
+                /* 調整左上角圖示的大小 */
+                .menu-icon img {
+            width: 25px;  /* 縮小圖示 */
+            height: 25px;
+        }
+
+        /* 移除所有與 home-link 相關的 CSS */
+        .home-link,
+        .slide-menu a.home-link,
+        .slide-menu a.home-link:hover {
+            display: none;
+        }
+    </style>
+</head>
+<body>
+    <div class="page-container">
+        <!-- 漢堡選單容器 -->
+        <div class="menu-container">
+            <!-- 修改選單圖示的點擊事件 -->
+            <div class="menu-icon" onclick="toggleMenu()">
+                <img src="./IMG/1.png" alt="Home" class="home-icon" style="display: none;" onclick="goHome(event)">
+                <div class="menu-line"></div>
+                <div class="menu-line"></div>
+                <div class="menu-line"></div>
+            </div>
+        </div>
+
+        <!-- 修改個人頭像按鈕 -->
+        <a href="pic.html" style="text-decoration: none;">
+            <div class="profile-button">
+                <img src="./IMG/333.png" alt="Profile">
+            </div>
+        </a>
+
+        <div class="page-title">行為紀錄</div>
+
+        <div class="content-container">
+            <div class="behavior-image">
+                <img src="./IMG/Designer 5.jpeg" alt="行為紀錄圖片">
+            </div>
+            <div class="bottom-section">
+                <div class="message-box">
+                    是什麼讓你這麼生氣呢？要給我說說嗎？
+                </div>
+                <div class="score-circle">
+                    <div class="score-number">24</div>
+                    <div class="score-unit">分</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- 確保側邊選單存在 -->
+        <div class="slide-menu" id="slideMenu">
+            <a href="http://127.0.0.1:5501/4.html">學習情緒</a>
+            <a href="http://127.0.0.1:5501/2.html">社交練習</a>
+            <a href="http://127.0.0.1:5501/10.html">心情專區</a>
+            <a href="http://127.0.0.1:5501/9.html">定位專區</a>
+            <a href="http://127.0.0.1:5501/pic.html">行為紀錄</a>
+         
+        </div>
+    </div>
+
+    <!-- 添加 JavaScript -->
+    <script>
+          function goHome(event) {
+            event.stopPropagation();
+            window.location.href = 'index.html?noSplash=true';
+        }
+
+        function toggleMenu() {
+            const menu = document.getElementById('slideMenu');
+            const menuIcon = document.querySelector('.menu-icon');
+            const menuLines = document.querySelectorAll('.menu-line');
+            const homeIcon = document.querySelector('.home-icon');
+            
+            menu.classList.toggle('open');
+            menuIcon.classList.toggle('menu-open');
+            
+            // 切換圖標顯示
+            if (menu.classList.contains('open')) {
+                menuLines.forEach(line => line.style.display = 'none');
+                homeIcon.style.display = 'block';
+            } else {
+                menuLines.forEach(line => line.style.display = 'block');
+                homeIcon.style.display = 'none';
+            }
+        }
+
+        // 添加點擊頁面關閉選單的功能
+        document.addEventListener('click', function(event) {
+            const menu = document.getElementById('slideMenu');
+            const menuIcon = document.querySelector('.menu-icon');
+            const menuContainer = document.querySelector('.menu-container');
+            
+            // 如果點擊的不是選單和選單圖標
+            if (!menu.contains(event.target) && 
+                !menuContainer.contains(event.target) && 
+                menu.classList.contains('open')) {
+                
+                toggleMenu();
+            }
+        });
+
+        // 防止選單內部點擊觸發關閉
+        document.querySelector('.slide-menu').addEventListener('click', function(event) {
+            event.stopPropagation();
+        });
+    </script>
+</body>
+</html>

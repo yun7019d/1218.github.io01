@@ -1,0 +1,660 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+            font-family: Arial, sans-serif;
+            background-color: #fdfcfb;
+            overflow: hidden;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+        }
+
+        /* 基礎容器樣式 */
+        .page-container {
+            width: 320px;
+            height: 430px;
+            border-radius: 60px;
+            position: relative;
+            margin: 0 auto;
+            background-color: #FEFDF8;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            overflow: hidden;
+        }
+
+        /* 漢堡選單圖示容器 */
+        .menu-container {
+            position: absolute;
+            top: 30px;
+            left: 20px;
+            z-index: 1000;
+            display: flex;
+            flex-direction: column;
+            gap: 20px;  /* 調整圖示之間的間距 */
+        }
+
+        /* 漢堡選單圖示 */
+        .menu-icon {
+            cursor: pointer;
+        }
+
+        .menu-icon div {
+            width: 30px;
+            height: 5px;
+            background-color: #C0D5EC;
+            margin: 4px 0;
+            border-radius: 3px;
+        }
+
+
+        /* 移除連結的預設樣式 */
+        .icon-link {
+            text-decoration: none;
+            color: #3B3754;
+            width: 100%;
+            height: 100%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        /* 側邊選單 */
+ 
+        /* 側邊選單 */
+        .slide-menu {
+            position: absolute;
+            left: -300px;
+            top: 0;
+            width: 200px;
+            height: 100%;
+            background-color: rgba(240, 243, 249, 0.95);
+            padding: 80px 8px 20px 8px;
+            gap: 0px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            transition: left 0.3s ease;
+            box-shadow: 2px 0 5px rgba(50, 37, 84, 0.1);
+            z-index: 999;
+            
+            /* 添加不規則曲面效果 */
+            border-radius: 0 80% 80% 0 / 0 50% 50% 0;
+            
+            /* 添加額外的視覺效果 */
+            backdrop-filter: blur(5px);
+            border-right: 1px solid rgba(255, 255, 255, 0.3);
+        }
+
+        /* 當選單打開時的樣式 */
+        .slide-menu.open {
+            left: 0;
+            animation: menuSlide 0.3s ease forwards;
+        }
+
+        /* 添加動畫效果 */
+        @keyframes menuSlide {
+            from {
+                border-radius: 0 80% 80% 0 / 0 50% 50% 0;
+            }
+            to {
+                border-radius: 0 100% 100% 0 / 0 70% 70% 0;
+            }
+        }
+
+        /* 調整選單項目位置以配合新的形狀 */
+        .slide-menu a:not(.home-link) {
+            transform: translateX(-10px);  /* 稍微向左偏移以配合曲面 */
+            margin: 5px 0;
+            padding: 12px 25px;
+            /* 其他現有樣式保持不變 */
+        }
+
+        /* 選單內的連結基本樣式 */
+        .slide-menu a {
+            display: inline-block;
+            padding: 4px 25px;           /* 恢復為均等的左右 padding */
+            color: #3B3754;
+            text-decoration: none;
+            text-align: center;          /* 保持置中對齊 */
+            margin: 0px auto;
+            transition: background-color 0.3s;
+            border-radius: 25px;
+            width: fit-content;
+            position: relative;
+            left: 0;                     /* 移除向右偏移 */
+            font-size: 14px;
+            line-height: 1.2;
+        }
+
+        .slide-menu a:hover {
+            background-color: rgba(173, 172, 224, 0.3);
+        }
+
+        /* Home icon 專用樣式 */
+        .home-link {
+            position: absolute;
+            left: 0px;
+            top: 360px;
+            width: 24px;
+            height: 24px;
+            padding: 0;
+            margin: 0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 50%;
+            transition: background-color 0.3s;
+            z-index: 1000;
+            transform: translateX(-2px);
+        }
+
+        .home-link img {
+            width: 100%;
+            height: 100%;
+            object-fit: contain;
+        }
+
+        .home-link:hover {
+            background-color: rgba(173, 172, 224, 0.3);
+        }
+
+        /* Home icon 專用樣式 */
+        .home-link {
+            position: absolute;
+            left: 0px;
+            top: 360px;
+            width: 24px;
+            height: 24px;
+            padding: 0;
+            margin: 0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 50%;
+            transition: background-color 0.3s;
+            z-index: 1000;
+            transform: translateX(-2px);
+        }
+
+        .home-link img {
+            width: 100%;
+            height: 100%;
+            object-fit: contain;
+        }
+
+        .home-link:hover {
+            background-color: rgba(173, 172, 224, 0.3);
+        }
+
+      
+        /* 頁面標題 */
+        .page-title {
+            position: absolute;
+            top: 33px;
+            left: 62px;
+            color: #3B3754;
+            font-size: 18px;
+            transform: none;
+        }
+
+        /* 選單容器調整 */
+        .slide-menu {
+            display: flex;
+            flex-direction: column;
+            align-items: center;         /* 保持置中對齊 */
+            padding: 80px 8px 60px 8px;
+            gap: 0px;
+        }
+
+        /* 特別為房子圖示的連結添加樣式 */
+        .slide-menu a.home-link {
+            padding: 0;
+            margin: 0;
+            position: absolute;
+            bottom: 30px;
+            left: 50px;
+            width: 24px;
+            height: 24px;
+            background: none;
+        }
+
+        .slide-menu a.home-link:hover {
+            background: none;
+        }
+
+        /* 當選單打開時顯示 home icon */
+        .slide-menu.open ~ .menu-container .menu-home-icon {
+            display: block;
+        }
+
+        /* 側邊選單樣式 */
+        .slide-menu {
+            position: absolute;
+            left: -300px;
+            top: 0;
+            width: 200px;
+            height: 100%;
+            background-color: rgba(240, 243, 249, 0.95);
+            border-top-right-radius: 50%;
+            border-bottom-right-radius: 50%;
+            padding: 80px 8px 20px 8px;
+            gap: 0px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            transition: left 0.3s ease;
+            box-shadow: 2px 0 5px rgba(50, 37, 84, 0.1);
+            z-index: 999;
+        }
+
+   
+        .slide-menu a:not(.home-link) {
+            display: inline-block;
+            padding: 15px 25px;
+            color: #867fa5;
+            text-decoration: none;
+            text-align: center;
+            margin: 1px auto;
+            transition: background-color 0.3s;
+            border-radius: 25px;
+            width: fit-content;
+            position: relative;
+            font-size: 14px;
+            line-height: 1.2;
+            transform: translateY(-60px);
+        }
+
+        .slide-menu a:not(.home-link):hover {
+            background-color: rgba(134, 127, 165, 0.1);
+        }
+
+        .home-link {
+            position: absolute;
+            left: 20px;
+            top: 380px;
+            width: 24px;
+            height: 24px;
+            padding: 0;
+            margin: 0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 50%;
+            transition: background-color 0.3s;
+            z-index: 1000;
+        }
+
+        .home-link img {
+            width: 100%;
+            height: 100%;
+            object-fit: contain;
+        }
+
+        .home-link:hover {
+            background-color: rgba(173, 172, 224, 0.3);
+        }
+
+
+        /* 網格容器 */
+        .grid-container {
+            top: 20px;
+            display: grid !important;
+            grid-template-columns: repeat(2, 1fr) !important;
+            gap: 2px !important;
+            padding: 25px !important;
+            margin-top: 70px !important;
+            height: auto !important;
+            overflow-y: visible !important;
+            position: absolute !important;
+            top: 50% !important;
+            transform: translateY(-61%) !important;
+            width: calc(100% - 50px) !important;
+        }
+
+        /* 網格項目基本樣式 */
+        .grid-container .grid-item {
+            position: relative !important;
+            border-radius: 15px !important;
+            overflow: hidden !important;
+            aspect-ratio: 1.2 !important;
+            cursor: pointer !important;
+            transform: scale(0.9) !important;
+            transition: all 0.2s ease-in-out !important;
+            -webkit-transition: all 0.2s ease-in-out !important;
+            -moz-transition: all 0.2s ease-in-out !important;
+            will-change: transform !important;
+            margin-bottom: 0 !important;
+        }
+
+        /* 懸停效果 - 應用到整個 grid-item */
+        .grid-container .grid-item:hover {
+            transform: scale(1.0) !important;
+            z-index: 10 !important;
+        }
+
+        /* 移除其他元素可能的獨立變形效果 */
+        .grid-container .grid-item:hover img,
+        .grid-container .grid-item:hover .overlay,
+        .grid-container .grid-item:hover .curve {
+            transform: none !important;
+        }
+
+        /* 圖片樣式 */
+        .grid-container .grid-item img {
+            width: 100% !important;
+            height: 80% !important;
+            object-fit: cover !important;
+            border-radius: 15px 15px 0 0 !important;
+            pointer-events: none !important;
+            user-select: none !important;
+            -webkit-user-select: none !important;
+        }
+
+        /* 底部覆蓋層 */
+        .grid-container .grid-item .overlay {
+            position: absolute !important;
+            bottom: 0 !important;
+            left: 0 !important;
+            right: 0 !important;
+            height: 20% !important;
+            pointer-events: none !important;
+        }
+
+        /* 曲線效果 */
+        .grid-container .grid-item .curve {
+            position: absolute !important;
+            top: -15px !important;
+            left: 0 !important;
+            right: 0 !important;
+            height: 15px !important;
+            border-radius: 50% 50% 0 0 !important;
+            pointer-events: none !important;
+        }
+
+        /* 分數樣式 */
+        .grid-container .grid-item .score {
+            position: absolute !important;
+            bottom: 10px !important;
+            right: 10px !important;
+            background-color: rgba(255, 255, 255, 0.95) !important;
+            padding: 5px 12px !important;
+            border-radius: 15px !important;
+            display: flex !important;
+            align-items: center !important;
+            gap: 2px !important;
+            pointer-events: none !important;
+            z-index: 2 !important;
+        }
+
+        /* 分數文字樣式 */
+        .grid-container .grid-item .score-number {
+            font-size: 16px !important;
+            color: #3B3754 !important;
+            font-weight: 500 !important;
+        }
+
+        .grid-container .grid-item .score-text {
+            font-size: 14px !important;
+            color: #3B3754 !important;
+        }
+
+        /* 顏色樣式 */
+        .grid-container .grid-item.yellow .overlay,
+        .grid-container .grid-item.yellow .curve {
+            background-color: #FFF8D9 !important;
+        }
+
+        .grid-container .grid-item.blue .overlay,
+        .grid-container .grid-item.blue .curve {
+            background-color: #E3F4F6 !important;
+        }
+
+        .grid-container .grid-item.green .overlay,
+        .grid-container .grid-item.green .curve {
+            background-color: #E8F6E8 !important;
+        }
+
+        .grid-container .grid-item.pink .overlay,
+        .grid-container .grid-item.pink .curve {
+            background-color: #FFE8E8 !important;
+        }
+
+        .grid-container .grid-item.green-light .overlay,
+        .grid-container .grid-item.green-light .curve {
+            background-color: #FFE8E8 !important;
+        }
+
+        .grid-container .grid-item.gray .overlay,
+        .grid-container .grid-item.gray .curve {
+            background-color: #dfd9ff !important;
+        }
+
+        /* 確保動畫效果平滑 */
+        * {
+            -webkit-font-smoothing: antialiased;
+            -moz-osx-font-smoothing: grayscale;
+        }
+
+        /* 使用 CSS 動畫替代 transition */
+        @keyframes scaleUp {
+            from { transform: scale(1); }
+            to { transform: scale(1.05); }
+        }
+
+        .grid-container a {
+            display: block;
+            text-decoration: none;
+            color: inherit;
+            cursor: pointer;
+        }
+
+        .grid-container a .grid-item {
+            margin: 0;
+        }
+
+        /* 確保點擊事件可以正常觸發 */
+        .grid-item {
+            pointer-events: auto !important;
+        }
+
+        .grid-item * {
+            pointer-events: none;  /* 防止子元素攔截點擊事件 */
+        }
+
+        /* 當滑鼠碰到凸塊時觸發父元素放大 */
+        .grid-container .grid-item .curve:hover {
+            cursor: pointer;
+        }
+
+        .grid-container .grid-item .curve:hover + .overlay,
+        .grid-container .grid-item .curve:hover + .overlay + img,
+        .grid-container .grid-item .curve:hover + .overlay + img + .grid-item {
+            transform: scale(1.0) !important;
+        }
+
+        /* 修改選擇器，讓凸塊觸發整體放大 */
+        .grid-container .grid-item .curve:hover ~ *,
+        .grid-container .grid-item:has(.curve:hover) {
+            transform: scale(1.0) !important;
+            z-index: 10 !important;
+        }
+ /* 調整左上角圖示的大小 */
+ .menu-icon img {
+            width: 25px;  /* 縮小圖示 */
+            height: 25px;
+        }
+
+        /* 移除所有與 home-link 相關的 CSS */
+        .home-link,
+        .slide-menu a.home-link,
+        .slide-menu a.home-link:hover {
+            display: none;
+        }
+    </style>
+</head>
+<body>
+    <div class="page-container">
+        <!-- 漢堡選單容器 -->
+        <div class="menu-container">
+            <!-- 選單圖示 -->
+            <div class="menu-icon" onclick="toggleMenu()">
+                <img src="./IMG/1.png" alt="Home" class="home-icon" style="display: none;" onclick="goHome(event)">
+                <div class="menu-line"></div>
+                <div class="menu-line"></div>
+                <div class="menu-line"></div>
+            </div>
+        </div>
+
+        <!-- 頁面標題 -->
+        <div class="page-title">行為紀錄</div>
+
+       
+
+        <!-- 側邊選單 -->
+        <div class="slide-menu" id="slideMenu">
+            <a href="http://127.0.0.1:5501/4.html">學習情緒</a>
+            <a href="http://127.0.0.1:5501/2.html">社交練習</a>
+            <a href="http://127.0.0.1:5501/10.html">心情專區</a>
+            <a href="http://127.0.0.1:5501/9.html">定位專區</a>
+            <a href="http://127.0.0.1:5501/pic.html">行為紀錄</a>
+           
+            
+        </div>
+
+        <div class="grid-container">
+            <a href="pic1.html" style="text-decoration: none;">
+                <div class="grid-item yellow">
+                    <img src="./IMG/Designer1.jpeg" alt="表情1">
+                    <div class="overlay">
+                        <div class="curve"></div>
+                        <div class="score">
+                            <span class="score-number">72</span>
+                            <span class="score-text">分</span>
+                        </div>
+                    </div>
+                </div>
+            </a>
+
+            <a href="pic2.html" style="text-decoration: none;">
+                <div class="grid-item blue">
+                    <img src="./IMG/Designer 2.jpeg" alt="表情2">
+                    <div class="overlay">
+                        <div class="curve"></div>
+                        <div class="score">
+                            <span class="score-number">46</span>
+                            <span class="score-text">分</span>
+                        </div>
+                    </div>
+                </div>
+            </a>
+
+            <a href="pic3.html" style="text-decoration: none;">
+                <div class="grid-item green">
+                    <img src="./IMG/Designer 3.jpeg" alt="表情3">
+                    <div class="overlay">
+                        <div class="curve"></div>
+                        <div class="score">
+                            <span class="score-number">94</span>
+                            <span class="score-text">分</span>
+                        </div>
+                    </div>
+                </div>
+            </a>
+
+            <a href="pic4.html" style="text-decoration: none;">
+                <div class="grid-item pink">
+                    <img src="./IMG/Designer 4.jpeg" alt="表情4">
+                    <div class="overlay">
+                        <div class="curve"></div>
+                        <div class="score">
+                            <span class="score-number">30</span>
+                            <span class="score-text">分</span>
+                        </div>
+                    </div>
+                </div>
+            </a>
+
+            <a href="pic5.html" style="text-decoration: none;">
+                <div class="grid-item green-light">
+                    <img src="./IMG/Designer 5.jpeg" alt="表情5">
+                    <div class="overlay">
+                        <div class="curve"></div>
+                        <div class="score">
+                            <span class="score-number">24</span>
+                            <span class="score-text">分</span>
+                        </div>
+                    </div>
+                </div>
+            </a>
+
+            <a href="pic6.html" style="text-decoration: none;">
+                <div class="grid-item gray">
+                    <img src="./IMG/Designer6.jpeg" alt="表情6">
+                    <div class="overlay">
+                        <div class="curve"></div>
+                        <div class="score">
+                            <span class="score-number">52</span>
+                            <span class="score-text">分</span>
+                        </div>
+                    </div>
+                </div>
+            </a>
+        </div>
+    </div>
+
+    <script>
+       function goHome(event) {
+            event.stopPropagation();
+            window.location.href = 'index.html?noSplash=true';
+        }
+
+        function toggleMenu() {
+            const menu = document.getElementById('slideMenu');
+            const menuIcon = document.querySelector('.menu-icon');
+            const menuLines = document.querySelectorAll('.menu-line');
+            const homeIcon = document.querySelector('.home-icon');
+            
+            menu.classList.toggle('open');
+            menuIcon.classList.toggle('menu-open');
+            
+            // 切換圖標顯示
+            if (menu.classList.contains('open')) {
+                menuLines.forEach(line => line.style.display = 'none');
+                homeIcon.style.display = 'block';
+            } else {
+                menuLines.forEach(line => line.style.display = 'block');
+                homeIcon.style.display = 'none';
+            }
+        }
+
+        // 添加點擊頁面關閉選單的功能
+        document.addEventListener('click', function(event) {
+            const menu = document.getElementById('slideMenu');
+            const menuIcon = document.querySelector('.menu-icon');
+            const menuContainer = document.querySelector('.menu-container');
+            
+            // 如果點擊的不是選單和選單圖標
+            if (!menu.contains(event.target) && 
+                !menuContainer.contains(event.target) && 
+                menu.classList.contains('open')) {
+                
+                toggleMenu();
+            }
+        });
+
+        // 防止選單內部點擊觸發關閉
+        document.querySelector('.slide-menu').addEventListener('click', function(event) {
+            event.stopPropagation();
+        });
+    </script>
+</body>
+</html>

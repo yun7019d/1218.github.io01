@@ -1,0 +1,655 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+            font-family: Arial, sans-serif;
+            background-color: #fdfcfb;
+            overflow: hidden;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+        }
+
+        /* 基礎容器樣式 */
+        .page-container {
+            width: 320px;
+            height: 430px;
+            border-radius: 60px;
+            position: relative;
+            margin: 0 auto;
+            background-image: url(./IMG/day_bg.png);
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            overflow: hidden;
+        }
+
+        /* 漢堡選單圖示容器 */
+        .menu-container {
+            position: absolute;
+            top: 30px;
+            left: 20px;
+            z-index: 1000;
+            display: flex;
+            flex-direction: column;
+            gap: 20px;  /* 調整圖示之間的間距 */
+        }
+
+        /* 漢堡選單圖示 */
+        .menu-icon {
+            cursor: pointer;
+        }
+
+        .menu-icon div {
+            width: 30px;
+            height: 5px;
+            background-color: #C0D5EC;
+            margin: 4px 0;
+            border-radius: 3px;
+        }
+
+
+        /* 移除連結的預設樣式 */
+        .icon-link {
+            text-decoration: none;
+            color: #3B3754;
+            width: 100%;
+            height: 100%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        /* 側邊選單 */
+        .slide-menu.open {
+            left: 0;
+            animation: menuSlide 0.3s ease forwards;
+        }
+
+        /* 添加動畫效果 */
+        @keyframes menuSlide {
+            from {
+                border-radius: 0 80% 80% 0 / 0 50% 50% 0;
+            }
+            to {
+                border-radius: 0 100% 100% 0 / 0 70% 70% 0;
+            }
+        }
+
+        /* 調整選單項目位置以配合新的形狀 */
+        .slide-menu a:not(.home-link) {
+            transform: translateX(-10px);  /* 稍微向左偏移以配合曲面 */
+            margin: 5px 0;
+            padding: 12px 25px;
+            /* 其他現有樣式保持不變 */
+        }
+
+        /* 選單內的連結基本樣式 */
+        .slide-menu a {
+            display: inline-block;
+            padding: 4px 25px;           /* 恢復為均等的左右 padding */
+            color: #3B3754;
+            text-decoration: none;
+            text-align: center;          /* 保持置中對齊 */
+            margin: 0px auto;
+            transition: background-color 0.3s;
+            border-radius: 25px;
+            width: fit-content;
+            position: relative;
+            left: 0;                     /* 移除向右偏移 */
+            font-size: 14px;
+            line-height: 1.2;
+        }
+
+        .slide-menu a:hover {
+            background-color: rgba(173, 172, 224, 0.3);
+        }
+
+
+        /* Home icon 專用樣式 */
+        .home-link {
+            position: absolute;
+            left: 0px;
+            top: 360px;
+            width: 24px;
+            height: 24px;
+            padding: 0;
+            margin: 0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 50%;
+            transition: background-color 0.3s;
+            z-index: 1000;
+            transform: translateX(-2px);
+        }
+
+        .home-link img {
+            width: 100%;
+            height: 100%;
+            object-fit: contain;
+        }
+
+        .home-link:hover {
+            background-color: rgba(173, 172, 224, 0.3);
+        }
+
+    
+
+        /* 頁面標題 */
+        .page-title {
+            position: absolute;
+            top: 33px;
+            left: 62px;
+            color: #3B3754;
+            font-size: 18px;
+            transform: none;
+        }
+
+        /* 選單容器調整 */
+        .slide-menu {
+            display: flex;
+            flex-direction: column;
+            align-items: center;         /* 保持置中對齊 */
+            padding: 80px 8px 60px 8px;
+            gap: 0px;
+        }
+
+        /* 特別為房子圖示的連結添加樣式 */
+        .slide-menu a.home-link {
+            padding: 0;
+            margin: 0;
+            position: absolute;
+            bottom: 30px;
+            left: 50px;
+            width: 24px;
+            height: 24px;
+            background: none;
+        }
+
+        .slide-menu a.home-link:hover {
+            background: none;
+        }
+
+        /* 當選單打開時顯示 home icon */
+        .slide-menu.open ~ .menu-container .menu-home-icon {
+            display: block;
+        }
+
+        /* 側邊選單樣式 */
+        .slide-menu {
+            position: absolute;
+            left: -300px;
+            top: 0;
+            width: 200px;
+            height: 100%;
+            background-color: rgba(240, 243, 249, 0.95);
+            border-top-right-radius: 50%;
+            border-bottom-right-radius: 50%;
+            padding: 80px 8px 20px 8px;
+            gap: 0px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            transition: left 0.3s ease;
+            box-shadow: 2px 0 5px rgba(50, 37, 84, 0.1);
+            z-index: 999;
+        }
+
+      
+        .slide-menu a:not(.home-link) {
+            display: inline-block;
+            padding: 15px 25px;
+            color: #867fa5;
+            text-decoration: none;
+            text-align: center;
+            margin: 1px auto;
+            transition: background-color 0.3s;
+            border-radius: 25px;
+            width: fit-content;
+            position: relative;
+            font-size: 14px;
+            line-height: 1.2;
+            transform: translateY(-60px);
+        }
+
+        .slide-menu a:not(.home-link):hover {
+            background-color: rgba(134, 127, 165, 0.1);
+        }
+
+        .home-link {
+            position: absolute;
+            left: 20px;
+            top: 380px;
+            width: 24px;
+            height: 24px;
+            padding: 0;
+            margin: 0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 50%;
+            transition: background-color 0.3s;
+            z-index: 1000;
+        }
+
+        .home-link img {
+            width: 100%;
+            height: 100%;
+            object-fit: contain;
+        }
+
+        .home-link:hover {
+            background-color: rgba(173, 172, 224, 0.3);
+        }
+/* 在 style 標籤內添加 */
+.calendar-container {
+    position: absolute;
+    top: 70px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 260px;
+    height: 300px;
+    perspective: 1000px;
+}
+
+.calendar-page {
+    position: relative;
+    width: 100%;
+    height: 100%;
+    background: white;
+    border-radius: 10px;
+    box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+    transition: transform 0.3s ease, opacity 0.3s ease;
+    transform-origin: bottom;
+    transform-style: preserve-3d;
+}
+
+.calendar-page.flip {
+    transform: rotateX(10deg) translateY(-100%);
+    opacity: 0;
+    transition: transform 0.6s cubic-bezier(0.4, 0, 0.2, 1), opacity 0.6s;
+}
+
+.daily-image {
+    width: 100%;
+    height: 220px;
+    object-fit: cover;
+    border-top-left-radius: 10px;
+    border-top-right-radius: 10px;
+}
+
+.date-content {
+    padding: 15px;
+    text-align: center;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 10px;
+}
+
+.month {
+    font-size: 14px;
+    color: #867fa5;
+}
+
+.date {
+    font-size: 24px;
+    font-weight: bold;
+    color: #3B3754;
+}
+
+.day {
+    font-size: 14px;
+    color: #867fa5;
+}
+
+.page-curl {
+    position: absolute;
+    bottom: 0;
+    right: 0;
+    width: 30px;
+    height: 30px;
+    background: linear-gradient(135deg, transparent 50%, #f0f0f0 50%);
+    border-bottom-right-radius: 10px;
+}
+
+.flip-buttons {
+    position: absolute;
+    bottom: -42px;
+    left: 20px;
+    right: 20px;
+    display: flex;
+    justify-content: space-between;
+    gap: 10px;
+}
+
+.flip-btn {
+    padding: 4px 10px;
+    background-color: #BAB5CF;
+    border: none;
+    border-radius: 20px;
+    color: #3B3754;
+    cursor: pointer;
+    transition: background-color 0.3s;
+    min-width: 65px;
+    text-align: center;
+    flex-shrink: 0;
+    font-size: 14px;
+}
+
+.flip-btn:hover {
+    background-color: #a9c5e3;
+}
+
+.new-btn {
+    background-color: #a9c5e3;
+}
+
+.new-btn:hover {
+    background-color: #98b4d2;
+}
+
+.emoji-button {
+    position: absolute;
+    top: 30px;
+    right: 20px;
+    width: 32px;
+    height: 32px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: rgba(255, 255, 255, 0.8);
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    transition: transform 0.3s ease, background-color 0.3s ease;
+    z-index: 1000;
+}
+
+.emoji-button img {
+    width: 24px;
+    height: 24px;
+    object-fit: contain;
+}
+
+.emoji-button:hover {
+    transform: scale(1.1);
+    background: rgba(255, 255, 255, 1);
+}
+
+.emoji-icon {
+    position: fixed;
+    top: 20px;
+    right: 30px;
+    width: 30px;
+    height: 30px;
+    cursor: pointer;
+    z-index: 9999;
+    width: 24px;
+    height: 24px;
+}
+
+.emoji-icon img {
+    width: 100%;
+    height: 100%;
+    object-fit: contain;
+    opacity: 0.8;
+}
+
+.emoji-icon:hover {
+    transform: scale(1.1);
+}
+
+.emoji-icon:hover img {
+    opacity: 1;
+}
+
+.header {
+    position: relative;
+    text-align: center;
+    padding: 20px 0;
+}
+
+.emoji-link {
+    position: absolute;
+    right: 30px;
+    top: 50px;
+    transform: translateY(-50%);
+    font-size: 24px;
+    text-decoration: none;
+    cursor: pointer;
+    transition: transform 0.3s ease;
+}
+
+/* 添加圖片限制 */
+.emoji-link img {
+    width: 32px;  /* 設定固定寬度 */
+    height: 32px; /* 設定固定高度 */
+    object-fit: contain; /* 保持圖片比例 */
+}
+
+.emoji-link:hover {
+    transform: translateY(-50%) scale(1.2);
+}
+
+/* 添加日歷連結樣式 */
+.calendar-container a {
+    display: block;
+    width: 100%;
+    cursor: pointer;
+    text-decoration: none;
+}
+
+.calendar-container a:hover {
+    text-decoration: none;
+}
+
+/* 確保翻頁按鈕不受影響 */
+.flip-buttons {
+    pointer-events: auto;
+    z-index: 2;
+}
+        /* 添加選單打開時的樣式 */
+        .slide-menu.open {
+            left: 0; /* 當有 open class 時移動到畫面中 */
+        }
+                /* 調整左上角圖示的大小 */
+                .menu-icon img {
+            width: 25px;  /* 縮小圖示 */
+            height: 25px;
+        }
+
+        /* 移除所有與 home-link 相關的 CSS */
+        .home-link,
+        .slide-menu a.home-link,
+        .slide-menu a.home-link:hover {
+            display: none;
+        }
+    </style>
+</head>
+<body>
+    <div class="page-container">
+        <!-- 漢堡選單容器 -->
+        <div class="menu-container">
+            <!-- 選單圖示 -->
+            <div class="menu-icon" onclick="toggleMenu()">
+                <img src="./IMG/1.png" alt="Home" class="home-icon" style="display: none;" onclick="goHome(event)">
+                <div class="menu-line"></div>
+                <div class="menu-line"></div>
+                <div class="menu-line"></div>
+            </div>
+        </div>
+
+        <!-- 頁面標題 -->
+        <div class="page-title">心情專區</div>
+        <div class="header">
+         
+            <!-- 在標題後直接添加 emoji 連結 -->
+            <a href="./7.html" class="emoji-link"><img src="./IMG/10000.png" alt=""></a>
+        </div>
+        
+        <div class="calendar-container">
+            <a href="http://127.0.0.1:5501/7.html" style="text-decoration: none; color: inherit;">
+                <div class="calendar-page">
+                    <img src="./IMG/AAA.png" alt="Daily Image" class="daily-image">
+                    <div class="date-content">
+                        <div class="month">五月</div>
+                        <div class="date">15</div>
+                        <div class="day">星期一</div>
+                    </div>
+                    <div class="page-curl"></div>
+                </div>
+            </a>
+            <div class="flip-buttons">
+                <button class="flip-btn" onclick="flipPage('prev')">上頁</button>
+                <button class="flip-btn" onclick="flipPage('next')">下頁</button>
+            </div>
+        </div>
+        <!-- 側邊選單 -->
+        <div class="slide-menu" id="slideMenu">
+            <a href="http://127.0.0.1:5501/4.html">學習情緒</a>
+            <a href="http://127.0.0.1:5501/2.html">社交練習</a>
+            <a href="http://127.0.0.1:5501/10.html">心情專區</a>
+            <a href="http://127.0.0.1:5501/9.html">定位專區</a>
+            <a href="http://127.0.0.1:5501/pic.html">行為紀錄</a>
+        </div>
+    </div>
+
+    <script>
+        // 定義圖片陣列
+        const IMAGES = [
+            './IMG/AAA.png',
+            './IMG/BBB.png',
+            './IMG/CCC.png'
+        ];
+
+        // 定義星期陣列
+        const DAYS = ['星期日', '星期一', '星期二', '星期三', '星期四', '星期五', '星期六'];
+
+        // 當頁面入完成時執行初始化
+        window.onload = function() {
+            初始化頁面();
+        }
+
+        // 初始化頁面設定
+        function 初始化頁面() {
+            // 設置隨機初始圖片
+            const 隨機圖片 = 取得隨機圖片();
+            const 每日圖片元素 = document.querySelector('.daily-image');
+            if (每日圖片元素) {
+                每日圖片元素.src = 隨機圖片;
+            }
+        }
+
+        // 從圖片陣列中隨機取得一張圖片
+        function 取得隨機圖片() {
+            return IMAGES[Math.floor(Math.random() * IMAGES.length)];
+        }
+
+        // 隨機取得一個星期幾
+        function 取得隨機星期() {
+            return DAYS[Math.floor(Math.random() * DAYS.length)];
+        }
+
+        // 計算下一個日期（1-30循環）
+        function 取得下一日期(目前日期) {
+            return 目前日期 % 30 + 1;
+        }
+
+        // 添加 Home 圖標點擊事件
+        function goHome(event) {
+            event.stopPropagation();
+            window.location.href = 'index.html?noSplash=true';
+        }
+
+        // 修改選單切換功能
+        function toggleMenu() {
+            const menu = document.getElementById('slideMenu');
+            const menuIcon = document.querySelector('.menu-icon');
+            const menuLines = document.querySelectorAll('.menu-line');
+            const homeIcon = document.querySelector('.home-icon');
+            
+            menu.classList.toggle('open');
+            menuIcon.classList.toggle('menu-open');
+            
+            // 切換圖標顯示
+            if (menu.classList.contains('open')) {
+                menuLines.forEach(line => line.style.display = 'none');
+                homeIcon.style.display = 'block';
+            } else {
+                menuLines.forEach(line => line.style.display = 'block');
+                homeIcon.style.display = 'none';
+            }
+        }
+
+        // 添加點擊頁面關閉選單
+        document.addEventListener('click', function(event) {
+            const menu = document.getElementById('slideMenu');
+            const menuIcon = document.querySelector('.menu-icon');
+            const menuContainer = document.querySelector('.menu-container');
+            
+            if (!menu.contains(event.target) && 
+                !menuContainer.contains(event.target) && 
+                menu.classList.contains('open')) {
+                
+                toggleMenu();
+            }
+        });
+
+        // 防止選單內部點擊觸發關閉
+        document.querySelector('.slide-menu').addEventListener('click', function(event) {
+            event.stopPropagation();
+        });
+
+        // 保留原有的日歷相關功能
+        function flipPage(direction) {
+            const 頁面 = document.querySelector('.calendar-page');
+            const 日期元素 = document.querySelector('.date');
+            const 星期元素 = document.querySelector('.day');
+            const 圖片元素 = document.querySelector('.daily-image');
+
+            // 添加翻頁動畫效果
+            頁面.style.transform = direction === 'prev' ? 'translateX(100%)' : 'translateX(-100%)';
+            頁面.style.opacity = '0';
+            
+            setTimeout(() => {
+                // 更新日期
+                let 目前日期 = parseInt(日期元素.textContent);
+                
+                if (direction === 'prev') {
+                    目前日期 = 目前日期 - 1;
+                    if (目前日期 < 1) 目前日期 = 31;  // 如果小於1，回到31
+                } else {
+                    目前日期 = 目前日期 + 1;
+                    if (目前日期 > 31) 目前日期 = 1;  // 如果大於31，回到1
+                }
+                
+                日期元素.textContent = 目前日期;
+
+                // 更新星期
+                const 星期列表 = ['星期日', '星期一', '星期二', '星期三', '星期四', '星期五', '星期六'];
+                const 目前星期索引 = 星期列表.indexOf(星期元素.textContent);
+                let 新星期索引;
+                
+                if (direction === 'prev') {
+                    新星期索引 = (目前星期索引 - 1 + 7) % 7;
+                } else {
+                    新星期索引 = (目前星期索引 + 1) % 7;
+                }
+                
+                星期元素.textContent = 星期列表[新星期索引];
+
+                // 重置動畫
+                頁面.style.transform = 'translateX(0)';
+                頁面.style.opacity = '1';
+            }, 300);
+        }
+    </script>
+</body>
+</html>
